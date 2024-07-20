@@ -63,7 +63,7 @@ namespace EMP
             System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
             client1B.BaseAddress = new System.Uri(URL);
             client1B.Timeout = TimeSpan.FromMinutes(30);
-            // client1B.DefaultRequestHeaders.Add("Idlist", UpdateIdList);
+            //client1B.DefaultRequestHeaders.Add("Idlist", UpdateIdList);
             client1B.DefaultRequestHeaders.Add("Name", "");
             client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
             client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -79,7 +79,7 @@ namespace EMP
             {
                 Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
-               
+
             }
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -89,10 +89,10 @@ namespace EMP
             {
                 Panel p = new Panel();
                 p.Margin = new Padding(left: 30, top: 10, bottom: 0, right: 0);
-                p.Size = new Size() {Height=30,Width=310 };
+                p.Size = new Size() { Height = 30, Width = 310 };
                 RadioButton2 rb1 = new RadioButton2();
                 rb1.Text = objlist[i].Name;
-                rb1.Font= new Font("Arial", 10, FontStyle.Bold);
+                rb1.Font = new Font("Arial", 10, FontStyle.Bold);
                 rb1.FlatStyle = FlatStyle.Flat;
                 rb1.Name = objlist[i].Id.ToString();
                 if (i == 0)
@@ -104,6 +104,7 @@ namespace EMP
                 blist.Add(rb1);
                 p.Controls.Add(rb1);
                 panel.Controls.Add(p);
+                //blist.Add(rb1);
             }
             panel.AutoScroll = false;
             panel.HorizontalScroll.Enabled = false;

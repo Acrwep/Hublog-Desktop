@@ -538,12 +538,12 @@ namespace EMP
                 bitmap.Save(name, ImageFormat.Jpeg);
             }
             addlist.Add(name);
+
             if (timer2.Enabled == false)
             {
                 timer2.Start();
             }
         }
-
 
         private void btnbreak_Click(object sender, EventArgs e)
         {
