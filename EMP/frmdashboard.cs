@@ -330,6 +330,7 @@ namespace EMP
             obj.Add(LM);
             string master = JsonConvert.SerializeObject(obj);
             string URL = Program.OnlineURL + "api/Users/InsertAttendance";
+
             string DATA = master;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
