@@ -91,7 +91,6 @@ namespace EMP
                 mynotifyicon.Visible = false;
             }
         }
-
         private void mynotifyicon_DoubleClick(object sender, EventArgs e)
         {
             this.Show();
@@ -99,7 +98,6 @@ namespace EMP
             this.ShowInTaskbar = true;
             mynotifyicon.Visible = false;
         }
-
         public void startup()
         {
             if (System.IO.File.Exists(Application.StartupPath + "\\systemdata"))
@@ -130,7 +128,7 @@ namespace EMP
             }
             logincheck(true);
         }
- 
+
         public void loginprocesss()
         {
             timer3.Start();
@@ -265,8 +263,6 @@ namespace EMP
                 punchbreakout();
             }
         }
-
-     
 
 
         public void punchin()
@@ -457,7 +453,7 @@ namespace EMP
             }
         }
 
-        #region old uploadscreenshot
+        #region  commented old uploadscreenshot
         //public void uploadscreenshot(string path)
         //{
         //    LoginModels LM = new LoginModels();
@@ -525,7 +521,6 @@ namespace EMP
                 imagedata = ms.ToArray();
             }
 
-            // Prepare the HTTP client
             string URL = Program.OnlineURL + "api/Users/UploadFile";
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
@@ -540,22 +535,17 @@ namespace EMP
                 client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
                 client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                // Prepare the content to be sent
                 var content1A = new MultipartFormDataContent();
 
-                // Add image data to the content
                 var imageContent = new ByteArrayContent(imagedata);
-                imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg"); // Change as needed
+                imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg"); 
                 content1A.Add(imageContent, "MyImages", filename);
 
-                // Send the request
                 HttpResponseMessage responseMessage = client1B.PostAsync(URL, content1A).Result;
                 string responseString = responseMessage.Content.ReadAsStringAsync().Result;
 
-                // Dispose of the image object
                 im.Dispose();
 
-                // Handle the response
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     Lastsync = DateTime.Now;
@@ -573,8 +563,6 @@ namespace EMP
                 }
             }
         }
-
-
         public void screenshot()
         {
             Rectangle bounds = Screen.GetBounds(Point.Empty);
@@ -615,7 +603,6 @@ namespace EMP
                 btnbreak.Text = "Resume";
             }
         }
-
         private void btnbreak_Click(object sender, EventArgs e)
         {
             if (currenttype == 1)
@@ -635,10 +622,6 @@ namespace EMP
                 timer1.Start();
             }
         }
-
-    
-
-     
 
         #region=======Timers==============
         private void timer1_Tick(object sender, EventArgs e)
@@ -674,8 +657,6 @@ namespace EMP
 
             lbllastsync.Text = "Last Sync "+ diff + " Ago";
         }
-
-
         #endregion
 
         private void btnlogout_Click(object sender, EventArgs e)
