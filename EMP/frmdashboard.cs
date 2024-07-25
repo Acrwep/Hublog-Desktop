@@ -420,7 +420,7 @@ namespace EMP
             Start_Time = DateTime.Now.ToString(),
             End_Time = DateTime.Now.ToString(),
             BreakEntryId = breakEntryId,
-                Status = 2 // Punch-out
+                Status = 2 
             };
             obj.Add(breakModel);
             string master = JsonConvert.SerializeObject(obj);
@@ -453,8 +453,7 @@ namespace EMP
             }
         }
 
-<<<<<<< HEAD
-=======
+
         #region  commented old uploadscreenshot
         //public void uploadscreenshot(string path)
         //{
@@ -506,7 +505,7 @@ namespace EMP
         //}
         #endregion
 
->>>>>>> 9f20cc7a83f17e14fecc2f4f075e71e8e37354e3
+
         public void uploadscreenshot(string path)
         {
             LoginModels LM = new LoginModels
@@ -626,13 +625,7 @@ namespace EMP
             }
         }
 
-<<<<<<< HEAD
 
-
-
-
-=======
->>>>>>> 9f20cc7a83f17e14fecc2f4f075e71e8e37354e3
         #region=======Timers==============
         private void timer1_Tick(object sender, EventArgs e)
         {
