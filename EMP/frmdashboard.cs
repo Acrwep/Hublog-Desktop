@@ -628,7 +628,7 @@ namespace EMP
                 client1B.BaseAddress = new Uri(URL);
                 client1B.Timeout = TimeSpan.FromMinutes(30);
                 client1B.DefaultRequestHeaders.Add("UId", Program.Loginlist.Id.ToString());
-                client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString());
+                client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString()); 
                 client1B.DefaultRequestHeaders.Add("SDate", DateTime.Now.ToString());
                 client1B.DefaultRequestHeaders.Add("SType", "ScreenShots");
                 client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
