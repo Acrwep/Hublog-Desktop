@@ -399,9 +399,6 @@ namespace EMP
             {
                 Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
-                //var objmaster = JsonConvert.DeserializeObject<ErrorMsg>(responseString1B);
-                //Logger.LogError("Login Server Error");
-                //Logger.LogError(objmaster.Message);
             }
         }
         public void PunchBreakOut(int breakEntryId)
@@ -500,7 +497,119 @@ namespace EMP
         //}
         #endregion
 
-        public void uploadscreenshot(string path)
+        #region  second commented Upload Screenshots
+        //public void uploadscreenshot(string path)
+        //{
+        //    LoginModels LM = new LoginModels
+        //    {
+        //        UserName = txtusername.Text,
+        //        Password = txtpassword.Text
+        //    };
+
+        //    string filename = Path.GetFileName(path);
+        //    Image im = Image.FromFile(path);
+        //    byte[] imagedata;
+        //    using (var ms = new MemoryStream())
+        //    {
+        //        im.Save(ms, im.RawFormat);
+        //        imagedata = ms.ToArray();
+        //    }
+
+        //    string URL = Program.OnlineURL + "api/Users/UploadFile";
+        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+        //    using (var client1B = new HttpClient())
+        //    {
+        //        client1B.BaseAddress = new Uri(URL);
+        //        client1B.Timeout = TimeSpan.FromMinutes(30);
+        //        client1B.DefaultRequestHeaders.Add("UId", Program.Loginlist.Id.ToString());
+        //        client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString());
+        //        client1B.DefaultRequestHeaders.Add("SDate", DateTime.Now.ToString());
+        //        client1B.DefaultRequestHeaders.Add("SType", "ScreenShots");
+        //        client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
+        //        client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        //        var content1A = new MultipartFormDataContent();
+
+        //        var imageContent = new ByteArrayContent(imagedata);
+        //        imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+        //        content1A.Add(imageContent, "MyImages", filename);
+
+        //        HttpResponseMessage responseMessage = client1B.PostAsync(URL, content1A).Result;
+        //        string responseString = responseMessage.Content.ReadAsStringAsync().Result;
+
+        //        im.Dispose();
+
+        //        if (responseMessage.IsSuccessStatusCode)
+        //        {
+        //            Lastsync = DateTime.Now;
+        //            File.Delete(path);
+        //            addlist.Remove(path);
+        //        }
+        //        else
+        //        {
+        //            if (!addlist.Contains(path))
+        //            {
+        //                addlist.Add(path);
+        //            }
+        //            Logger.LogError("Upload Error : \n " + responseMessage + " \n Code : " + HttpStatusCode.BadRequest.ToString());
+        //            Logger.LogError(responseString);
+        //        }
+        //    }
+        //}
+        #endregion
+
+        #region  second commented screenshot
+        //public void screenshot()
+        //{
+        //    Rectangle bounds = Screen.GetBounds(Point.Empty);
+        //    string name = DateTime.Now.ToString("yyyyMMddHHmmss");
+        //    name = Application.StartupPath + "\\ScreenShot\\" + name + ".jpg";
+        //    using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+        //    {
+        //        using (Graphics g = Graphics.FromImage(bitmap))
+        //        {
+        //            g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+        //        }
+        //        bitmap.Save(name, ImageFormat.Jpeg);
+        //    }
+        //    addlist.Add(name);
+
+        //    if (timer2.Enabled == false)
+        //    {
+        //        timer2.Start();
+        //    }
+        //}
+        #endregion
+
+
+
+        public void screenshot()
+        {
+            Rectangle bounds = Screen.GetBounds(Point.Empty);
+            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+                }
+
+                using (var ms = new MemoryStream())
+                {
+                    bitmap.Save(ms, ImageFormat.Jpeg);
+                    byte[] imagedata = ms.ToArray();
+                    uploadscreenshot(imagedata); 
+                }
+            }
+
+            if (timer2.Enabled == false)
+            {
+                timer2.Start();
+            }
+        }
+
+
+        public void uploadscreenshot(byte[] imagedata)
         {
             LoginModels LM = new LoginModels
             {
@@ -508,14 +617,8 @@ namespace EMP
                 Password = txtpassword.Text
             };
 
-            string filename = Path.GetFileName(path);
-            Image im = Image.FromFile(path);
-            byte[] imagedata;
-            using (var ms = new MemoryStream())
-            {
-                im.Save(ms, im.RawFormat);
-                imagedata = ms.ToArray();
-            }
+            // Prepare the filename based on current timestamp
+            string filename = DateTime.Now.ToString("yyyyMMddHHmmss") + ".jpg";
 
             string URL = Program.OnlineURL + "api/Users/UploadFile";
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -540,48 +643,19 @@ namespace EMP
                 HttpResponseMessage responseMessage = client1B.PostAsync(URL, content1A).Result;
                 string responseString = responseMessage.Content.ReadAsStringAsync().Result;
 
-                im.Dispose();
-
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     Lastsync = DateTime.Now;
-                    File.Delete(path);
-                    addlist.Remove(path);
                 }
                 else
                 {
-                    if (!addlist.Contains(path))
-                    {
-                        addlist.Add(path);
-                    }
                     Logger.LogError("Upload Error : \n " + responseMessage + " \n Code : " + HttpStatusCode.BadRequest.ToString());
                     Logger.LogError(responseString);
                 }
             }
         }
 
-        #region screenshot
-        public void screenshot()
-        {
-            Rectangle bounds = Screen.GetBounds(Point.Empty);
-            string name = DateTime.Now.ToString("yyyyMMddHHmmss");
-            name = Application.StartupPath + "\\ScreenShot\\" + name + ".jpg";
-            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
-            {
-                using (Graphics g = Graphics.FromImage(bitmap))
-                {
-                    g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
-                }
-                bitmap.Save(name, ImageFormat.Jpeg);
-            }
-            addlist.Add(name);
 
-            if (timer2.Enabled == false)
-            {
-                timer2.Start();
-            }
-        }
-        #endregion
 
         #region  Commented Screenshot Interval from API
         //private readonly object listLock = new object();
@@ -671,7 +745,8 @@ namespace EMP
             }
             else if (currenttype == 2)
             {
-                btnbegin.Text = "Resume";
+                //timer1.Start();
+                btnbegin.Text = "Punch Out";
                 btnbreak.Text = "Resume";
             }
         }
@@ -702,16 +777,32 @@ namespace EMP
             screenshot();
             //browserdetails();
         }
+        //private void timer2_Tick(object sender, EventArgs e)
+        //{
+        //    if (addlist.Count != 0)
+        //    {
+        //        for (int i = 0; i < addlist.Count; i++)
+        //        {
+        //            uploadscreenshot(addlist[i]);
+        //        }
+        //    }
+        //}
+
         private void timer2_Tick(object sender, EventArgs e)
         {
             if (addlist.Count != 0)
             {
                 for (int i = 0; i < addlist.Count; i++)
                 {
-                    uploadscreenshot(addlist[i]);
+                    string filePath = addlist[i];
+
+                    byte[] imagedata = File.ReadAllBytes(filePath);
+
+                    uploadscreenshot(imagedata);
                 }
             }
         }
+
         private void timer3_Tick(object sender, EventArgs e)
         {
             lblcurrenttime.Text = DateTime.Now.ToString("ddd dd MMMM yyyy HH:mm:ss");
