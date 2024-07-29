@@ -655,6 +655,22 @@ namespace EMP
             }
         }
 
+        #region screenshot
+        public void screenshot()
+        {
+            Rectangle bounds = Screen.GetBounds(Point.Empty);
+            string name = DateTime.Now.ToString("yyyyMMddHHmmss");
+            //name = Application.StartupPath + "\\ScreenShot\\" + name + ".jpg";
+            name = "C:\\Users\\Administrator\\Pictures\\" + "\\ScreenShot\\" + name + ".jpg";
+            using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+            {
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
+                }
+                bitmap.Save(name, ImageFormat.Jpeg);
+            }
+            addlist.Add(name);
 
 
         #region  Commented Screenshot Interval from API
