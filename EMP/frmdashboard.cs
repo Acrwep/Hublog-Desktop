@@ -91,6 +91,7 @@ namespace EMP
                 mynotifyicon.Visible = false;
             }
         }
+
         private void mynotifyicon_DoubleClick(object sender, EventArgs e)
         {
             this.Show();
@@ -98,6 +99,7 @@ namespace EMP
             this.ShowInTaskbar = true;
             mynotifyicon.Visible = false;
         }
+
         public void startup()
         {
             if (System.IO.File.Exists(Application.StartupPath + "\\systemdata"))
@@ -128,7 +130,7 @@ namespace EMP
             }
             logincheck(true);
         }
-
+ 
         public void loginprocesss()
         {
             timer3.Start();
@@ -260,9 +262,11 @@ namespace EMP
             }
             else if (currenttype == 2)
             {
-                PunchBreakOut(breakid);
+                punchbreakout();
             }
         }
+
+     
 
 
         public void punchin()
@@ -326,7 +330,6 @@ namespace EMP
             obj.Add(LM);
             string master = JsonConvert.SerializeObject(obj);
             string URL = Program.OnlineURL + "api/Users/InsertAttendance";
-
             string DATA = master;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
@@ -362,7 +365,7 @@ namespace EMP
                 //Logger.LogError(objmaster.Message);
             }
         }
-        public void PunchBreakIn(int BreakEntryId)
+        public void punchbreakin(int BreakEntryId)
         {
             List<UserBreakModel> obj = new List<UserBreakModel>();
             UserBreakModel LM = new UserBreakModel();
@@ -407,8 +410,7 @@ namespace EMP
                 //Logger.LogError(objmaster.Message);
             }
         }
-
-        public void PunchBreakOut(int breakEntryId)
+        public void punchbreakout()
         {
             List<UserBreakModel> obj = new List<UserBreakModel>();
             UserBreakModel breakModel = new UserBreakModel
@@ -424,32 +426,35 @@ namespace EMP
             };
             obj.Add(breakModel);
             string master = JsonConvert.SerializeObject(obj);
-            string url = Program.OnlineURL + "api/Users/InsertBreak";
+            string URL = Program.OnlineURL + "api/Users/InsertBreak";
+            string DATA = master;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            using (var client = new System.Net.Http.HttpClient())
+            System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
+            client1B.BaseAddress = new System.Uri(URL);
+            client1B.Timeout = TimeSpan.FromMinutes(30);
+            // client1B.DefaultRequestHeaders.Add("Idlist", UpdateIdList);
+            client1B.DefaultRequestHeaders.Add("Name", "");
+            client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
+            client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            System.Net.Http.HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
+            HttpResponseMessage messge1B = client1B.PostAsync(URL, content1B).Result;
+            var responseString1B = messge1B.Content.ReadAsStringAsync().Result;
+            if (messge1B.IsSuccessStatusCode)
             {
-                client.BaseAddress = new Uri(url);
-                client.Timeout = TimeSpan.FromMinutes(30);
-                client.DefaultRequestHeaders.Add("Authorization", Program.token);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpContent content = new StringContent(master, Encoding.UTF8, "application/json");
+                currenttype = 1;
+                SW.Start();
+                SW1.Stop();
+                timer1.Start();
+                changestatus();
 
-                HttpResponseMessage response = client.PostAsync(url, content).Result;
-                var responseString = response.Content.ReadAsStringAsync().Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    currenttype = 1;
-                    SW.Start();
-                    SW1.Stop();
-                    timer1.Start();
-                    changestatus();
-                }
-                else
-                {
-                    Logger.LogError("Error: " + response.StatusCode.ToString());
-                    Logger.LogError(responseString);
-                }
+            }
+            else
+            {
+                Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
+                Logger.LogError(responseString1B);
+                //var objmaster = JsonConvert.DeserializeObject<ErrorMsg>(responseString1B);
+                //Logger.LogError("Login Server Error");
+                //Logger.LogError(objmaster.Message);
             }
         }
 
@@ -508,61 +513,71 @@ namespace EMP
 
         public void uploadscreenshot(string path)
         {
-            LoginModels LM = new LoginModels
-            {
-                UserName = txtusername.Text,
-                Password = txtpassword.Text
-            };
-
+            LoginModels LM = new LoginModels();
+            LM.UserName = txtusername.Text;
+            LM.Password = txtpassword.Text;
             string filename = Path.GetFileName(path);
             Image im = Image.FromFile(path);
-            byte[] imagedata;
+            byte[] imagedata = null;
             using (var ms = new MemoryStream())
             {
                 im.Save(ms, im.RawFormat);
                 imagedata = ms.ToArray();
             }
-
+            string master = JsonConvert.SerializeObject(LM);
             string URL = Program.OnlineURL + "api/Users/UploadFile";
+            string DATA = master;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            using (var client1B = new HttpClient())
+            System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
+            client1B.BaseAddress = new System.Uri(URL);
+            client1B.Timeout = TimeSpan.FromMinutes(30);
+            client1B.DefaultRequestHeaders.Add("UId", Program.Loginlist.Id.ToString());
+            client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString());
+            client1B.DefaultRequestHeaders.Add("SDate", DateTime.Now.ToString());
+            client1B.DefaultRequestHeaders.Add("SType", "ScreenShots");
+            client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
+            client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            System.Net.Http.HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
+            MultipartFormDataContent content1A = new MultipartFormDataContent();
+            content1A.Add(new StreamContent(new MemoryStream(imagedata)), "MyImages", filename);
+            HttpResponseMessage messge1B = client1B.PostAsync(URL, content1A).Result;
+            var responseString1B = messge1B.Content.ReadAsStringAsync().Result;
+            im.Dispose();
+            if (messge1B.IsSuccessStatusCode)
             {
-                client1B.BaseAddress = new Uri(URL);
-                client1B.Timeout = TimeSpan.FromMinutes(30);
-                client1B.DefaultRequestHeaders.Add("UId", Program.Loginlist.Id.ToString());
-                client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString());
-                client1B.DefaultRequestHeaders.Add("SDate", DateTime.Now.ToString());
-                client1B.DefaultRequestHeaders.Add("SType", "ScreenShots");
-                client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
-                client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                var content1A = new MultipartFormDataContent();
-
-                var imageContent = new ByteArrayContent(imagedata);
-                imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg"); 
-                content1A.Add(imageContent, "MyImages", filename);
-
-                HttpResponseMessage responseMessage = client1B.PostAsync(URL, content1A).Result;
-                string responseString = responseMessage.Content.ReadAsStringAsync().Result;
-
-                im.Dispose();
-
-                if (responseMessage.IsSuccessStatusCode)
+                Lastsync = DateTime.Now;
+                File.Delete(path);
+                addlist.Remove(path);
+            }
+            else
+            {
+                if (addlist.Where(c => c == path).Count() == 0)
                 {
-                    Lastsync = DateTime.Now;
-                    File.Delete(path);
-                    addlist.Remove(path);
+                    addlist.Add(path);
                 }
-                else
-                {
-                    if (!addlist.Contains(path))
-                    {
-                        addlist.Add(path);
-                    }
-                    Logger.LogError("Upload Error : \n " + responseMessage + " \n Code : " + HttpStatusCode.BadRequest.ToString());
-                    Logger.LogError(responseString);
-                }
+                Logger.LogError("Upload Error : \n " + messge1B + " \n Code : " + HttpStatusCode.BadRequest.ToString());
+                Logger.LogError(responseString1B);
+            }
+        }
+
+
+        public void changestatus()
+        {
+            if (currenttype == 0)
+            {
+                timer1.Stop();
+                btnbegin.Text = "Punch In";
+            }
+            else if (currenttype == 1)
+            {
+                timer1.Start();
+                btnbegin.Text = "Punch Out";
+                btnbreak.Text = "Break";
+            }
+            else if (currenttype == 2)
+            {
+                btnbegin.Text = "Resume";
+                btnbreak.Text = "Resume";
             }
         }
         public void screenshot()
@@ -586,25 +601,6 @@ namespace EMP
             }
         }
 
-        public void changestatus()
-        {
-            if (currenttype == 0)
-            {
-                timer1.Stop();
-                btnbegin.Text = "Punch In";
-            }
-            else if (currenttype == 1)
-            {
-                timer1.Start();
-                btnbegin.Text = "Punch Out";
-                btnbreak.Text = "Break";
-            }
-            else if (currenttype == 2)
-            {
-                btnbegin.Text = "Resume";
-                btnbreak.Text = "Resume";
-            }
-        }
         private void btnbreak_Click(object sender, EventArgs e)
         {
             if (currenttype == 1)
@@ -614,17 +610,16 @@ namespace EMP
                 obj.ShowDialog();
                 if (breakid != 0)
                 {
-                    PunchBreakIn(breakid);
+                    punchbreakin(breakid);
                     timer1.Stop();
                 }
             }
             else if (currenttype == 2)
             {
-                PunchBreakOut(breakid);
+                punchbreakout();
                 timer1.Start();
             }
         }
-
 
         #region=======Timers==============
         private void timer1_Tick(object sender, EventArgs e)
@@ -660,6 +655,8 @@ namespace EMP
 
             lbllastsync.Text = "Last Sync "+ diff + " Ago";
         }
+
+
         #endregion
 
         private void btnlogout_Click(object sender, EventArgs e)

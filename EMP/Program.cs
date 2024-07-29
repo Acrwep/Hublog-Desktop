@@ -10,7 +10,6 @@ namespace EMP
     static class Program
     {
         //public static string OnlineURL = "http://43.204.54.223:8001/";
-
         public static string OnlineURL = "https://localhost:44318/";
 
         public static Users Loginlist = new Users();
