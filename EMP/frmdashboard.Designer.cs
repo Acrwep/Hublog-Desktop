@@ -1,4 +1,6 @@
-﻿namespace EMP
+﻿using System.Windows.Forms;
+
+namespace EMP
 {
     partial class frmdashboard
     {

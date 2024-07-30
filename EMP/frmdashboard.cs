@@ -53,6 +53,23 @@ namespace EMP
             startup();
         }
 
+        //private void ExitMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    DialogResult result = MessageBox.Show("Do you want to punch out before exiting?", "Punch Out Confirmation", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+        //    if (result == DialogResult.Yes)
+        //    {
+        //        punchout();
+        //    }
+        //    else if (result == DialogResult.No)
+        //    {
+        //        Application.Exit(); 
+        //    }
+        //    else
+        //    {
+        //        // If Cancel is selected, do nothing, keeping the application in the tray
+        //    }
+        //}
+
         private void frmdashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -74,9 +91,19 @@ namespace EMP
 
             }
         }
+
         private void closeapp(object sender, EventArgs e)
         {
-            Application.Exit();
+            DialogResult result = MessageBox.Show("Do you want to punch out before exiting?", "Punch Out Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                punchout();
+                Application.Exit();
+            }
+            else
+            {
+                // Application remains in Tray
+            }
         }
         private void frmdashboard_Resize(object sender, EventArgs e)
         {
@@ -347,7 +374,7 @@ namespace EMP
                 timer1.Stop();
                 changestatus();
 
-
+                //Application.Exit();
 
             }
             else
@@ -608,7 +635,6 @@ namespace EMP
             }
         }
 
-
         public void uploadscreenshot(byte[] imagedata)
         {
             LoginModels LM = new LoginModels
@@ -654,8 +680,6 @@ namespace EMP
                 }
             }
         }
-
-
 
         #region  Commented Screenshot Interval from API
         //private readonly object listLock = new object();
