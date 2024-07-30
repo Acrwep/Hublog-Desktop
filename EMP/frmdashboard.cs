@@ -372,7 +372,7 @@ namespace EMP
                 SW1.Stop();
                 SW1.Reset();
                 timer1.Stop();
-                changestatus();
+               changestatus();
 
                 //Application.Exit();
 
@@ -406,7 +406,6 @@ namespace EMP
             System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
             client1B.BaseAddress = new System.Uri(URL);
             client1B.Timeout = TimeSpan.FromMinutes(30);
-            // client1B.DefaultRequestHeaders.Add("Idlist", UpdateIdList);
             client1B.DefaultRequestHeaders.Add("Name", "");
             client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
             client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -421,12 +420,34 @@ namespace EMP
                 timer1.Stop();
                 changestatus();
 
+                // Retrieve Max_Break_Time from database and open BreakTimerForm
+                int maxBreakTime = GetMaxBreakTime(BreakEntryId); // Assuming BreakEntryId is the same as BreakId
+                BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+                breakTimerForm.ShowDialog();
             }
             else
             {
                 Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
             }
+        }
+
+      
+
+        // This is a placeholder method to simulate retrieving Max_Break_Time from the database
+        private int GetMaxBreakTime(int breakEntryId)
+        {
+            // You should replace this with actual database retrieval code
+            // For demonstration purposes, returning hardcoded values
+            if (breakEntryId == 1)
+            {
+                return 45; // 45 minutes for Lunch Break
+            }
+            else if (breakEntryId == 2)
+            {
+                return 15; // 15 minutes for Morning Break
+            }
+            return 0; // Default to 0 if not found
         }
         public void PunchBreakOut(int breakEntryId)
         {

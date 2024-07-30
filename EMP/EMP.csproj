@@ -106,6 +106,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BreakTimerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BreakTimerForm.Designer.cs">
+      <DependentUpon>BreakTimerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Common\EnumManager.cs" />
     <Compile Include="Common\logerrors.cs" />
     <Compile Include="Common\Message.cs" />
@@ -125,6 +131,9 @@
     <Compile Include="Models\Models.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="BreakTimerForm.resx">
+      <DependentUpon>BreakTimerForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmbreak.resx">
       <DependentUpon>frmbreak.cs</DependentUpon>
     </EmbeddedResource>
