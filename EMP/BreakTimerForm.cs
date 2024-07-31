@@ -17,9 +17,9 @@ namespace EMP
         public BreakTimerForm(int maxBreakTime)
         {
             InitializeComponent();
-            _timeLeft = maxBreakTime * 60; // Convert minutes to seconds
+            _timeLeft = maxBreakTime * 60; 
             lblTimer.Text = TimeSpan.FromSeconds(_timeLeft).ToString(@"mm\:ss");
-            timer1.Interval = 1000; // 1 second intervals
+            timer1.Interval = 1000;
             timer1.Tick += Timer1_Tick;
             timer1.Start();
         }

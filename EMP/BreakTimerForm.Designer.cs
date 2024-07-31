@@ -24,9 +24,6 @@ namespace EMP
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnResume = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // lblTimer
-            // 
             this.lblTimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F);
             this.lblTimer.Location = new System.Drawing.Point(50, 50);
             this.lblTimer.Name = "lblTimer";
@@ -34,11 +31,7 @@ namespace EMP
             this.lblTimer.TabIndex = 0;
             this.lblTimer.Text = "00:00";
             this.lblTimer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnResume
-            // 
-            // btnResume
-            // btnResume
+
             this.btnResume = new System.Windows.Forms.Button();
             this.btnResume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResume.Location = new System.Drawing.Point(85, 120);
@@ -52,9 +45,6 @@ namespace EMP
             this.btnResume.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnResume.Click += new System.EventHandler(this.btnResume_Click);
 
-
-            // BreakTimerForm
-            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(300, 200);

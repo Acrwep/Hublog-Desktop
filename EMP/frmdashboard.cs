@@ -420,8 +420,7 @@ namespace EMP
                 timer1.Stop();
                 changestatus();
 
-                // Retrieve Max_Break_Time from database and open BreakTimerForm
-                int maxBreakTime = GetMaxBreakTime(BreakEntryId); // Assuming BreakEntryId is the same as BreakId
+                int maxBreakTime = GetMaxBreakTime(BreakEntryId); 
                 BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
                 breakTimerForm.ShowDialog();
             }
@@ -433,21 +432,22 @@ namespace EMP
         }
 
       
-
-        // This is a placeholder method to simulate retrieving Max_Break_Time from the database
         private int GetMaxBreakTime(int breakEntryId)
         {
-            // You should replace this with actual database retrieval code
-            // For demonstration purposes, returning hardcoded values
+         
             if (breakEntryId == 1)
             {
-                return 45; // 45 minutes for Lunch Break
+                return 31; 
             }
             else if (breakEntryId == 2)
             {
-                return 15; // 15 minutes for Morning Break
+                return 45; 
             }
-            return 0; // Default to 0 if not found
+            else if (breakEntryId == 3)
+            {
+                return 15;
+            }
+            return 0;
         }
         public void PunchBreakOut(int breakEntryId)
         {
