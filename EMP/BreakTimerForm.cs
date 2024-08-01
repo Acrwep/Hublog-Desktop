@@ -10,9 +10,10 @@ namespace EMP
         private int _timeLeft;
         private int _breakId;
         private frmdashboard _dashboard;
-        public BreakTimerForm(int breakId, int maxBreakTime)
+        public BreakTimerForm(frmdashboard dashboard,int breakId, int maxBreakTime)
         {
             InitializeComponent();
+            _dashboard = dashboard;
             _timeLeft = maxBreakTime * 60;
             _breakId = breakId;
             lblTimer.Text = TimeSpan.FromSeconds(_timeLeft).ToString(@"mm\:ss");
@@ -39,12 +40,7 @@ namespace EMP
 
         private void btnResume_Click(object sender, EventArgs e)
         {
-            if (_dashboard.currenttype == 2)
-            {
-                _dashboard.PunchBreakOut(_breakId);
-                timer1.Start();
-            }
-            this.Close();
+            _dashboard.PunchBreakOut(_breakId);
             this.Close();
         }
         private void BreakTimerForm_Load(object sender, EventArgs e)

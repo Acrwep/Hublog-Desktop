@@ -397,7 +397,7 @@ namespace EMP
                 //breakTimerForm.ShowDialog();
 
                 int maxBreakTime = await GetMaxBreakTime(BreakEntryId);
-                BreakTimerForm breakTimerForm = new BreakTimerForm(BreakEntryId, maxBreakTime);
+                BreakTimerForm breakTimerForm = new BreakTimerForm(this, BreakEntryId, maxBreakTime);
                 breakTimerForm.ShowDialog();
             }
             else

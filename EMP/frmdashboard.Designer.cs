@@ -412,7 +412,7 @@ namespace EMP
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lblname;
-        private System.Windows.Forms.Timer timer1;
+        internal System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label lblshortname;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
