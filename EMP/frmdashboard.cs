@@ -226,58 +226,63 @@ namespace EMP
         {
             try
             {
-                LoginModels LM = new LoginModels();
-                LM.UserName = txtusername.Text;
-                LM.Password = txtpassword.Text;
+                LoginModels LM = new LoginModels
+                {
+                    UserName = txtusername.Text,
+                    Password = txtpassword.Text
+                };
+
                 string master = JsonConvert.SerializeObject(LM);
                 string URL = Program.OnlineURL + "api/Login/UserLogin";
                 string DATA = master;
+
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                using (System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient())
+                using (var client = new System.Net.Http.HttpClient())
                 {
-                    client1B.BaseAddress = new System.Uri(URL);
-                    client1B.Timeout = TimeSpan.FromMinutes(30);
-                    client1B.DefaultRequestHeaders.Add("Name", "");
-                    client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.BaseAddress = new Uri(URL);
+                    client.Timeout = TimeSpan.FromMinutes(30);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
-                    HttpResponseMessage messge1B = client1B.PostAsync(URL, content1B).Result;
-                    string responseString1B = messge1B.Content.ReadAsStringAsync().Result;
+                    HttpContent content = new StringContent(DATA, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = client.PostAsync(URL, content).Result;
+
+                    string responseString = response.Content.ReadAsStringAsync().Result;
 
                     // Log the raw response for debugging
-                    Logger.LogInfo("Raw response: " + responseString1B);
+                    Logger.LogInfo("Raw response: " + responseString);
 
-                    if (messge1B.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
                         try
                         {
-                            var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
+                            var objresult = JsonConvert.DeserializeObject<loginresult>(responseString);
                             Program.Loginlist = objresult.user;
                             Program.token = objresult.token;
                             pnllogin.Visible = false;
                             loginprocesss();
                         }
-                        catch (JsonReaderException)
+                        catch (JsonReaderException ex)
                         {
+                            Logger.LogError("Failed to parse the response. The response was not in the expected JSON format: " + ex.Message);
                             MessageBox.Show("Failed to parse the response. The response was not in the expected JSON format.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
                     else
                     {
-                        Logger.LogError("Login Error : Code : " + messge1B.StatusCode.ToString());
-                        Logger.LogError(responseString1B);
+                        Logger.LogError("Login Error : Code : " + response.StatusCode.ToString());
+                        Logger.LogError(responseString);
 
                         if (errorshow)
                         {
                             try
                             {
-                                var errorResult = JsonConvert.DeserializeObject<dynamic>(responseString1B);
+                                var errorResult = JsonConvert.DeserializeObject<dynamic>(responseString);
                                 MessageBox.Show((string)errorResult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             catch (JsonReaderException)
                             {
-                                MessageBox.Show("Failed to parse the response. The response was not in the expected JSON format.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("Failed to parse the error response. The response was not in the expected JSON format.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                         }
                     }
@@ -290,27 +295,40 @@ namespace EMP
             }
         }
 
-
         public void loginprocesss()
         {
-            timer3.Start();
-            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Application.StartupPath + "\\systemdata"))
+            try
             {
-                string data = JsonConvert.SerializeObject(Program.Loginlist);
-                string data1 = "";
-                using (var sha256 = SHA256.Create())
+                timer3.Start();
+
+                string filePath = Path.Combine(Application.StartupPath, "systemdata");
+
+                using (var sw = new System.IO.StreamWriter(filePath))
                 {
-                    var saltedPasswordAsBytes = Encoding.UTF8.GetBytes(data);
-                    data1 = Convert.ToBase64String(saltedPasswordAsBytes);
-                    sw.WriteLine(data1);
-                    sw.Dispose();
+                    string data = JsonConvert.SerializeObject(Program.Loginlist);
+                    string encryptedData = "";
+
+                    using (var sha256 = SHA256.Create())
+                    {
+                        byte[] saltedPasswordAsBytes = Encoding.UTF8.GetBytes(data);
+                        encryptedData = Convert.ToBase64String(saltedPasswordAsBytes);
+                        sw.WriteLine(encryptedData);
+                    }
                 }
+
+                // Update UI elements
+                lblname.Text = Program.Loginlist.First_Name;
+                lblemail.Text = Program.Loginlist.Email;
+                lblshortname.Text = $"{Program.Loginlist.First_Name?.FirstOrDefault()}{Program.Loginlist.Last_Name?.FirstOrDefault()}";
+                Lastsync = DateTime.Now;
             }
-            lblname.Text = Program.Loginlist.First_Name;
-            lblemail.Text = Program.Loginlist.Email;
-            lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
-            Lastsync = DateTime.Now;
+            catch (Exception ex)
+            {
+                Logger.LogError("An unexpected error occurred in loginprocesss: " + ex.Message);
+                MessageBox.Show("An unexpected error occurred during the login process: " + ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
 
         public void logoutcheck(bool errorshow)
         {
