@@ -109,6 +109,12 @@
     <Compile Include="Common\EnumManager.cs" />
     <Compile Include="Common\logerrors.cs" />
     <Compile Include="Common\Message.cs" />
+    <Compile Include="Design\CustomTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Design\RoundedButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="frmbreak.cs">
       <SubType>Form</SubType>
     </Compile>

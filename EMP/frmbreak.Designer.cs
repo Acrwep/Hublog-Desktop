@@ -1,4 +1,6 @@
-﻿namespace EMP
+﻿using EMP.Design;
+
+namespace EMP
 {
     partial class frmbreak
     {
@@ -29,7 +31,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmbreak));
-            this.btnbreak = new System.Windows.Forms.Button();
+
+            //this.btnbreak = new System.Windows.Forms.Button();
+            this.btnbreak = new RoundedButton();
+
             this.panel = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
             // 
@@ -71,7 +76,7 @@
             this.MinimizeBox = false;
             this.Name = "frmbreak";
             this.ShowIcon = false;
-            this.Text = "HUBLOO";
+            this.Text = "Request Break";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 
@@ -80,6 +85,7 @@
         #endregion
         private System.Windows.Forms.Button btnbreak;
         private System.Windows.Forms.FlowLayoutPanel panel;
+        
     }
 }
 

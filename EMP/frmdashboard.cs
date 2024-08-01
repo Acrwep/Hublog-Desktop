@@ -46,7 +46,8 @@ namespace EMP
         private void frmdashboard_Load(object sender, EventArgs e)
         {
             pnllogin.Location = new Point() { X = 12, Y = 12 };
-            this.Size = new Size() { Width = 374, Height = 471 };
+            //this.Size = new Size() { Width = 374, Height = 471 };
+            this.Size = new Size() { Width = 379, Height = 580 };
             this.mynotifyicon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
             this.mynotifyicon.ContextMenuStrip.Items.Add("QUIT", null, closeapp);
             timer3.Start();
@@ -609,8 +610,6 @@ namespace EMP
         //}
         #endregion
 
-
-
         public void screenshot()
         {
             Rectangle bounds = Screen.GetBounds(Point.Empty);
@@ -827,16 +826,49 @@ namespace EMP
             }
         }
 
+        #region timer3_Tick
+        //private void timer3_Tick(object sender, EventArgs e)
+        //{
+        //    lblcurrenttime.Text = DateTime.Now.ToString("ddd dd MMMM yyyy HH:mm:ss");
+        //    TimeSpan ts = SW.Elapsed;
+        //    lbltimer.Text = String.Format("{0:00}:{1:00}:{2:00}",
+        //    ts.Hours, ts.Minutes, ts.Seconds);
+        //    TimeSpan sync = (Lastsync - DateTime.Now);
+        //    if (sync.TotalMinutes > 60)
+        //    {
+        //        diff = String.Format("{1} hours {2} minutes", sync.Hours, sync.Minutes);
+        //    }
+        //    else
+        //    {
+        //        diff = sync.Minutes + " mins";
+        //    }
+
+        //    lbllastsync.Text = "Last Sync " + diff + " Ago";
+        //}
+        #endregion
+
         private void timer3_Tick(object sender, EventArgs e)
         {
+
             lblcurrenttime.Text = DateTime.Now.ToString("ddd dd MMMM yyyy HH:mm:ss");
+
             TimeSpan ts = SW.Elapsed;
             lbltimer.Text = String.Format("{0:00}:{1:00}:{2:00}",
-            ts.Hours, ts.Minutes, ts.Seconds);
-            TimeSpan sync = (Lastsync - DateTime.Now);
+                ts.Hours, ts.Minutes, ts.Seconds);
+
+            TimeSpan sync = DateTime.Now - Lastsync;
+
+            if (sync.TotalMinutes < 0)
+            {
+                lbllastsync.Text = "Last Sync: Future time detected";
+                return;
+            }
+
+
+            string diff;
             if (sync.TotalMinutes > 60)
             {
-                diff = String.Format("{1} hours {2} minutes", sync.Hours, sync.Minutes);
+                diff = String.Format("{0} hours {1} minutes", sync.Hours, sync.Minutes);
             }
             else
             {
@@ -845,6 +877,8 @@ namespace EMP
 
             lbllastsync.Text = "Last Sync " + diff + " Ago";
         }
+
+
         #endregion
 
         private void btnlogout_Click(object sender, EventArgs e)

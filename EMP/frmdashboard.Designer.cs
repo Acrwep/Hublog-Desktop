@@ -1,4 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System;
+using System.Windows.Forms;
+using EMP.Design;
 
 namespace EMP
 {
@@ -32,20 +35,19 @@ namespace EMP
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmdashboard));
-            this.btnbegin = new System.Windows.Forms.Button();
+            this.btnbegin = new EMP.Design.RoundedButton();
             this.pnllogin = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnlogin = new System.Windows.Forms.Button();
+            this.btnlogin = new EMP.Design.RoundedButton();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtpassword = new System.Windows.Forms.TextBox();
             this.txtusername = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lblshortname = new System.Windows.Forms.Label();
-            this.btnbreak = new System.Windows.Forms.Button();
+            this.btnbreak = new EMP.Design.RoundedButton();
             this.lblname = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.mynotifyicon = new System.Windows.Forms.NotifyIcon(this.components);
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
@@ -61,7 +63,6 @@ namespace EMP
             this.timer3 = new System.Windows.Forms.Timer(this.components);
             this.pnllogin.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -71,11 +72,12 @@ namespace EMP
             // btnbegin
             // 
             this.btnbegin.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btnbegin.BorderRadius = 5;
             this.btnbegin.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnbegin.ForeColor = System.Drawing.SystemColors.Control;
-            this.btnbegin.Location = new System.Drawing.Point(42, 152);
+            this.btnbegin.Location = new System.Drawing.Point(63, 162);
             this.btnbegin.Name = "btnbegin";
-            this.btnbegin.Size = new System.Drawing.Size(241, 64);
+            this.btnbegin.Size = new System.Drawing.Size(197, 50);
             this.btnbegin.TabIndex = 0;
             this.btnbegin.Text = "Punch in";
             this.btnbegin.UseVisualStyleBackColor = false;
@@ -90,9 +92,9 @@ namespace EMP
             this.pnllogin.Controls.Add(this.label1);
             this.pnllogin.Controls.Add(this.txtpassword);
             this.pnllogin.Controls.Add(this.txtusername);
-            this.pnllogin.Location = new System.Drawing.Point(358, 12);
+            this.pnllogin.Location = new System.Drawing.Point(352, 12);
             this.pnllogin.Name = "pnllogin";
-            this.pnllogin.Size = new System.Drawing.Size(334, 408);
+            this.pnllogin.Size = new System.Drawing.Size(340, 514);
             this.pnllogin.TabIndex = 1;
             // 
             // panel1
@@ -102,17 +104,18 @@ namespace EMP
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(328, 132);
+            this.panel1.Size = new System.Drawing.Size(334, 137);
             this.panel1.TabIndex = 5;
             // 
             // btnlogin
             // 
             this.btnlogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnlogin.BorderRadius = 5;
             this.btnlogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnlogin.ForeColor = System.Drawing.Color.White;
-            this.btnlogin.Location = new System.Drawing.Point(139, 256);
+            this.btnlogin.Location = new System.Drawing.Point(113, 351);
             this.btnlogin.Name = "btnlogin";
-            this.btnlogin.Size = new System.Drawing.Size(149, 51);
+            this.btnlogin.Size = new System.Drawing.Size(96, 29);
             this.btnlogin.TabIndex = 4;
             this.btnlogin.Text = "LOGIN";
             this.btnlogin.UseVisualStyleBackColor = false;
@@ -123,7 +126,7 @@ namespace EMP
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Black;
-            this.label2.Location = new System.Drawing.Point(50, 208);
+            this.label2.Location = new System.Drawing.Point(37, 260);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(86, 20);
             this.label2.TabIndex = 3;
@@ -142,19 +145,24 @@ namespace EMP
             // 
             // txtpassword
             // 
-            this.txtpassword.Location = new System.Drawing.Point(139, 209);
+            this.txtpassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtpassword.ForeColor = System.Drawing.Color.Gray;
+            this.txtpassword.Location = new System.Drawing.Point(41, 295);
+            this.txtpassword.Multiline = true;
             this.txtpassword.Name = "txtpassword";
-            this.txtpassword.Size = new System.Drawing.Size(149, 20);
+            this.txtpassword.Size = new System.Drawing.Size(249, 29);
             this.txtpassword.TabIndex = 1;
-            //this.txtpassword.Text = "123456";
+            this.txtpassword.UseSystemPasswordChar = true;
             // 
             // txtusername
             // 
-            this.txtusername.Location = new System.Drawing.Point(139, 169);
+            this.txtusername.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.txtusername.ForeColor = System.Drawing.Color.Gray;
+            this.txtusername.Location = new System.Drawing.Point(41, 209);
+            this.txtusername.Multiline = true;
             this.txtusername.Name = "txtusername";
-            this.txtusername.Size = new System.Drawing.Size(149, 20);
-            this.txtusername.TabIndex = 0;
-            //this.txtusername.Text = "vetri@Hublog.com";
+            this.txtusername.Size = new System.Drawing.Size(249, 28);
+            this.txtusername.TabIndex = 1;
             // 
             // panel2
             // 
@@ -171,7 +179,7 @@ namespace EMP
             this.lblshortname.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lblshortname.Font = new System.Drawing.Font("Microsoft Sans Serif", 35F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblshortname.ForeColor = System.Drawing.Color.White;
-            this.lblshortname.Location = new System.Drawing.Point(6, 26);
+            this.lblshortname.Location = new System.Drawing.Point(9, 28);
             this.lblshortname.Name = "lblshortname";
             this.lblshortname.Size = new System.Drawing.Size(87, 54);
             this.lblshortname.TabIndex = 2;
@@ -181,11 +189,12 @@ namespace EMP
             // btnbreak
             // 
             this.btnbreak.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.btnbreak.BorderRadius = 5;
             this.btnbreak.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnbreak.ForeColor = System.Drawing.Color.White;
-            this.btnbreak.Location = new System.Drawing.Point(199, 15);
+            this.btnbreak.Location = new System.Drawing.Point(114, 254);
             this.btnbreak.Name = "btnbreak";
-            this.btnbreak.Size = new System.Drawing.Size(84, 33);
+            this.btnbreak.Size = new System.Drawing.Size(106, 33);
             this.btnbreak.TabIndex = 2;
             this.btnbreak.Text = "Break";
             this.btnbreak.UseVisualStyleBackColor = false;
@@ -205,17 +214,8 @@ namespace EMP
             // 
             // timer1
             // 
-            //this.timer1.Interval = 5 * 60 * 1000;
-            this.timer1.Interval = 20000;
+            this.timer1.Interval = 300000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 437);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(685, 112);
-            this.dataGridView1.TabIndex = 7;
             // 
             // timer2
             // 
@@ -224,23 +224,23 @@ namespace EMP
             // 
             // mynotifyicon
             // 
-            this.mynotifyicon.BalloonTipText = "HUBLOO";
-            this.mynotifyicon.BalloonTipTitle = "HUBLOO";
+            this.mynotifyicon.BalloonTipText = "HUBLOG";
+            this.mynotifyicon.BalloonTipTitle = "HUBLOG";
             this.mynotifyicon.Icon = ((System.Drawing.Icon)(resources.GetObject("mynotifyicon.Icon")));
-            this.mynotifyicon.Text = "HUBLOO";
+            this.mynotifyicon.Text = "HUBLOG";
             this.mynotifyicon.Visible = true;
             this.mynotifyicon.DoubleClick += new System.EventHandler(this.mynotifyicon_DoubleClick);
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Azure;
+            this.flowLayoutPanel1.BackColor = System.Drawing.Color.White;
             this.flowLayoutPanel1.Controls.Add(this.panel2);
             this.flowLayoutPanel1.Controls.Add(this.panel3);
             this.flowLayoutPanel1.Controls.Add(this.panel4);
             this.flowLayoutPanel1.Controls.Add(this.panel5);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 15);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(334, 408);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(334, 523);
             this.flowLayoutPanel1.TabIndex = 3;
             // 
             // panel3
@@ -273,14 +273,14 @@ namespace EMP
             this.panel4.Controls.Add(this.btnbreak);
             this.panel4.Location = new System.Drawing.Point(3, 116);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(328, 228);
+            this.panel4.Size = new System.Drawing.Size(331, 318);
             this.panel4.TabIndex = 8;
             // 
             // lblcurrenttime
             // 
             this.lblcurrenttime.AutoSize = true;
             this.lblcurrenttime.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblcurrenttime.Location = new System.Drawing.Point(95, 127);
+            this.lblcurrenttime.Location = new System.Drawing.Point(93, 106);
             this.lblcurrenttime.Name = "lblcurrenttime";
             this.lblcurrenttime.Size = new System.Drawing.Size(148, 15);
             this.lblcurrenttime.TabIndex = 4;
@@ -290,7 +290,7 @@ namespace EMP
             // 
             this.lbltimer.AutoSize = true;
             this.lbltimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 35F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbltimer.Location = new System.Drawing.Point(66, 65);
+            this.lbltimer.Location = new System.Drawing.Point(64, 52);
             this.lbltimer.Name = "lbltimer";
             this.lbltimer.Size = new System.Drawing.Size(213, 54);
             this.lbltimer.TabIndex = 3;
@@ -302,9 +302,9 @@ namespace EMP
             this.panel5.Controls.Add(this.button2);
             this.panel5.Controls.Add(this.btnlogout);
             this.panel5.Controls.Add(this.lbllastsync);
-            this.panel5.Location = new System.Drawing.Point(3, 350);
+            this.panel5.Location = new System.Drawing.Point(3, 440);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(329, 56);
+            this.panel5.Size = new System.Drawing.Size(331, 58);
             this.panel5.TabIndex = 9;
             // 
             // button2
@@ -359,17 +359,16 @@ namespace EMP
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(699, 428);
+            this.ClientSize = new System.Drawing.Size(694, 567);
             this.Controls.Add(this.pnllogin);
             this.Controls.Add(this.flowLayoutPanel1);
-            this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmdashboard";
             this.ShowIcon = false;
-            this.Text = "HUBLOO";
+            this.Text = "HUBLOG";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmdashboard_FormClosing);
             this.Load += new System.EventHandler(this.frmdashboard_Load);
             this.Resize += new System.EventHandler(this.frmdashboard_Resize);
@@ -377,7 +376,6 @@ namespace EMP
             this.pnllogin.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
@@ -389,21 +387,31 @@ namespace EMP
 
         }
 
-        #endregion
+        //private void chkShowPassword_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    if (chkShowPassword.Checked)
+        //    {
+        //        txtpassword.UseSystemPasswordChar = false;
+        //    }
+        //    else
+        //    {
+        //        txtpassword.UseSystemPasswordChar = true;
+        //    }
+        //}
 
-        private System.Windows.Forms.Button btnbegin;
+        #endregion
+        //private System.Windows.Forms.CheckBox chkShowPassword;
         private System.Windows.Forms.Panel pnllogin;
-        private System.Windows.Forms.Button btnlogin;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+
         private System.Windows.Forms.TextBox txtpassword;
         private System.Windows.Forms.TextBox txtusername;
+
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label lblname;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Button btnbreak;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.Label lblshortname;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
@@ -418,6 +426,11 @@ namespace EMP
         private System.Windows.Forms.Timer timer3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.NotifyIcon mynotifyicon;
+        private RoundedButton btnbegin;
+        private RoundedButton btnlogin;
+        private RoundedButton btnbreak;
+
+
     }
 }
 
