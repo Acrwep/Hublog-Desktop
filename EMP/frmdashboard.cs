@@ -137,26 +137,6 @@ namespace EMP
             }
             logincheck(true);
         }
-        public void loginprocesss()
-        {
-            timer3.Start();
-            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Application.StartupPath + "\\systemdata"))
-            {
-                string data = JsonConvert.SerializeObject(Program.Loginlist);
-                string data1 = "";
-                using (var sha256 = SHA256.Create())
-                {
-                    var saltedPasswordAsBytes = Encoding.UTF8.GetBytes(data);
-                    data1 = Convert.ToBase64String(saltedPasswordAsBytes);
-                    sw.WriteLine(data1);
-                    sw.Dispose();
-                }
-            }
-            lblname.Text = Program.Loginlist.First_Name;
-            lblemail.Text = Program.Loginlist.Email;
-            lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
-            Lastsync = DateTime.Now;
-        }
         public void logoutprocesss()
         {
             timer1.Stop();
@@ -181,43 +161,150 @@ namespace EMP
             lblemail.Text = Program.Loginlist.Email;
             lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
         }
+
+        #region Login
+        //public void logincheck(bool errorshow)
+        //{
+        //    LoginModels LM = new LoginModels();
+        //    LM.UserName = txtusername.Text;
+        //    LM.Password = txtpassword.Text;
+        //    string master = JsonConvert.SerializeObject(LM);
+        //    string URL = Program.OnlineURL + "api/Login/UserLogin";
+        //    string DATA = master;
+        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        //    System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
+        //    client1B.BaseAddress = new System.Uri(URL);
+        //    client1B.Timeout = TimeSpan.FromMinutes(30);
+        //    client1B.DefaultRequestHeaders.Add("Name", "");
+        //    client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //    System.Net.Http.HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
+        //    HttpResponseMessage messge1B = client1B.PostAsync(URL, content1B).Result;
+        //    var responseString1B = messge1B.Content.ReadAsStringAsync().Result;
+        //    var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
+        //    if (messge1B.IsSuccessStatusCode)
+        //    {
+
+        //        Program.Loginlist = objresult.user;
+        //        Program.token = objresult.token;
+        //        pnllogin.Visible = false;
+        //        loginprocesss();
+        //    }
+        //    else
+        //    {
+        //        Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
+        //        Logger.LogError(responseString1B);
+        //        if (errorshow == true)
+        //        {
+        //            MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+
+        //    }
+        //}
+        //public void loginprocesss()
+        //{
+        //    timer3.Start();
+        //    using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Application.StartupPath + "\\systemdata"))
+        //    {
+        //        string data = JsonConvert.SerializeObject(Program.Loginlist);
+        //        string data1 = "";
+        //        using (var sha256 = SHA256.Create())
+        //        {
+        //            var saltedPasswordAsBytes = Encoding.UTF8.GetBytes(data);
+        //            data1 = Convert.ToBase64String(saltedPasswordAsBytes);
+        //            sw.WriteLine(data1);
+        //            sw.Dispose();
+        //        }
+        //    }
+        //    lblname.Text = Program.Loginlist.First_Name;
+        //    lblemail.Text = Program.Loginlist.Email;
+        //    lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
+        //    Lastsync = DateTime.Now;
+        //}
+        #endregion
+
         public void logincheck(bool errorshow)
         {
-            LoginModels LM = new LoginModels();
-            LM.UserName = txtusername.Text;
-            LM.Password = txtpassword.Text;
-            string master = JsonConvert.SerializeObject(LM);
-            string URL = Program.OnlineURL + "api/Login/UserLogin";
-            string DATA = master;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
-            client1B.BaseAddress = new System.Uri(URL);
-            client1B.Timeout = TimeSpan.FromMinutes(30);
-            client1B.DefaultRequestHeaders.Add("Name", "");
-            client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            System.Net.Http.HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
-            HttpResponseMessage messge1B = client1B.PostAsync(URL, content1B).Result;
-            var responseString1B = messge1B.Content.ReadAsStringAsync().Result;
-            var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
-            if (messge1B.IsSuccessStatusCode)
+            try
             {
+                LoginModels LM = new LoginModels();
+                LM.UserName = txtusername.Text;
+                LM.Password = txtpassword.Text;
+                string master = JsonConvert.SerializeObject(LM);
+                string URL = Program.OnlineURL + "api/Login/UserLogin";
+                string DATA = master;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                Program.Loginlist = objresult.user;
-                Program.token = objresult.token;
-                pnllogin.Visible = false;
-                loginprocesss();
-            }
-            else
-            {
-                Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
-                Logger.LogError(responseString1B);
-                if (errorshow == true)
+                using (System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient())
                 {
-                    MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                    client1B.BaseAddress = new System.Uri(URL);
+                    client1B.Timeout = TimeSpan.FromMinutes(30);
+                    client1B.DefaultRequestHeaders.Add("Name", "");
+                    client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+                    HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
+                    HttpResponseMessage messge1B = client1B.PostAsync(URL, content1B).Result;
+                    string responseString1B = messge1B.Content.ReadAsStringAsync().Result;
+
+                    // Log the raw response for debugging
+                    Logger.LogInfo("Raw response: " + responseString1B);
+
+                    if (messge1B.IsSuccessStatusCode)
+                    {
+                        var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
+
+                        Program.Loginlist = objresult.user;
+                        Program.token = objresult.token;
+                        pnllogin.Visible = false;
+                        loginprocesss();
+                    }
+                    else
+                    {
+                        Logger.LogError("Login Error : Code : " + messge1B.StatusCode.ToString());
+                        Logger.LogError(responseString1B);
+
+                        if (errorshow == true)
+                        {
+                            try
+                            {
+                                var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
+                                MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            catch (JsonReaderException)
+                            {
+                                MessageBox.Show("Failed to parse the response. The response was not in the expected JSON format.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("An unexpected error occurred: " + ex.Message);
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        public void loginprocesss()
+        {
+            timer3.Start();
+            using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Application.StartupPath + "\\systemdata"))
+            {
+                string data = JsonConvert.SerializeObject(Program.Loginlist);
+                string data1 = "";
+                using (var sha256 = SHA256.Create())
+                {
+                    var saltedPasswordAsBytes = Encoding.UTF8.GetBytes(data);
+                    data1 = Convert.ToBase64String(saltedPasswordAsBytes);
+                    sw.WriteLine(data1);
+                    sw.Dispose();
+                }
+            }
+            lblname.Text = Program.Loginlist.First_Name;
+            lblemail.Text = Program.Loginlist.Email;
+            lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
+            Lastsync = DateTime.Now;
+        }
+
         public void logoutcheck(bool errorshow)
         {
             LoginModels LM = new LoginModels();
