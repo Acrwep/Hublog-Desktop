@@ -250,24 +250,30 @@ namespace EMP
 
                     if (messge1B.IsSuccessStatusCode)
                     {
-                        var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
-
-                        Program.Loginlist = objresult.user;
-                        Program.token = objresult.token;
-                        pnllogin.Visible = false;
-                        loginprocesss();
+                        try
+                        {
+                            var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
+                            Program.Loginlist = objresult.user;
+                            Program.token = objresult.token;
+                            pnllogin.Visible = false;
+                            loginprocesss();
+                        }
+                        catch (JsonReaderException)
+                        {
+                            MessageBox.Show("Failed to parse the response. The response was not in the expected JSON format.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
                     else
                     {
                         Logger.LogError("Login Error : Code : " + messge1B.StatusCode.ToString());
                         Logger.LogError(responseString1B);
 
-                        if (errorshow == true)
+                        if (errorshow)
                         {
                             try
                             {
-                                var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
-                                MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                var errorResult = JsonConvert.DeserializeObject<dynamic>(responseString1B);
+                                MessageBox.Show((string)errorResult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             catch (JsonReaderException)
                             {
@@ -283,6 +289,7 @@ namespace EMP
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         public void loginprocesss()
         {
