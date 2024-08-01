@@ -20,6 +20,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;     
+using System.Data.SqlClient;
 
 namespace EMP
 {
@@ -39,10 +41,6 @@ namespace EMP
 
         public List<string> addlist = new List<string>();
 
-        //0 none
-        //1 punch
-        //2 break
-        //3 out
         private void frmdashboard_Load(object sender, EventArgs e)
         {
             pnllogin.Location = new Point() { X = 12, Y = 12 };
@@ -53,23 +51,6 @@ namespace EMP
             timer3.Start();
             startup();
         }
-
-        //private void ExitMenuItem_Click(object sender, EventArgs e)
-        //{
-        //    DialogResult result = MessageBox.Show("Do you want to punch out before exiting?", "Punch Out Confirmation", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-        //    if (result == DialogResult.Yes)
-        //    {
-        //        punchout();
-        //    }
-        //    else if (result == DialogResult.No)
-        //    {
-        //        Application.Exit(); 
-        //    }
-        //    else
-        //    {
-        //        // If Cancel is selected, do nothing, keeping the application in the tray
-        //    }
-        //}
 
         private void frmdashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -114,8 +95,7 @@ namespace EMP
                 mynotifyicon.ShowBalloonTip(500);
                 this.Hide();
             }
-
-            else if (FormWindowState.Normal == this.WindowState)
+                        else if (FormWindowState.Normal == this.WindowState)
             {
                 mynotifyicon.Visible = false;
             }
@@ -226,20 +206,16 @@ namespace EMP
                 Program.token = objresult.token;
                 pnllogin.Visible = false;
                 loginprocesss();
-
-            }
+                            }
             else
             {
-
-                Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
+                                Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
                 if (errorshow == true)
                 {
                     MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                //var objmaster = JsonConvert.DeserializeObject<ErrorMsg>(responseString1B);
-                //Logger.LogError("Login Server Error");
-                //Logger.LogError(objmaster.Message);
+                
             }
         }
         public void logoutcheck(bool errorshow)
@@ -330,10 +306,7 @@ namespace EMP
             {
                 Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
-                //var objmaster = JsonConvert.DeserializeObject<ErrorMsg>(responseString1B);
-                //Logger.LogError("Login Server Error");
-                //Logger.LogError(objmaster.Message);
-            }
+                            }
         }
         public void punchout()
         {
@@ -373,7 +346,7 @@ namespace EMP
                 SW1.Stop();
                 SW1.Reset();
                 timer1.Stop();
-                changestatus();
+               changestatus();
 
                 //Application.Exit();
 
@@ -407,7 +380,6 @@ namespace EMP
             System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
             client1B.BaseAddress = new System.Uri(URL);
             client1B.Timeout = TimeSpan.FromMinutes(30);
-            // client1B.DefaultRequestHeaders.Add("Idlist", UpdateIdList);
             client1B.DefaultRequestHeaders.Add("Name", "");
             client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
             client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -422,6 +394,9 @@ namespace EMP
                 timer1.Stop();
                 changestatus();
 
+                int maxBreakTime = GetMaxBreakTime(BreakEntryId); 
+                BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+                breakTimerForm.ShowDialog();
             }
             else
             {
@@ -429,7 +404,38 @@ namespace EMP
                 Logger.LogError(responseString1B);
             }
         }
-        public void PunchBreakOut(int breakEntryId)
+
+
+private int GetMaxBreakTime(int breakEntryId)
+    {
+        string connectionString = "Data Source=DESKTOP-M2LCTQE\\SQLEXPRESS;Initial Catalog=EMP4;User Id=sa;Password=Hublog123;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
+
+        string query = "SELECT Max_Break_Time FROM BreakMaster WHERE Id = @BreakEntryId";
+
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BreakEntryId", breakEntryId);
+                    connection.Open();
+                    object result = command.ExecuteScalar();
+                    if (result != null && int.TryParse(result.ToString(), out int maxBreakTime))
+                    {
+                        return maxBreakTime;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+        return 0;
+    }
+
+    public void PunchBreakOut(int breakEntryId)
         {
             List<UserBreakModel> obj = new List<UserBreakModel>();
             UserBreakModel breakModel = new UserBreakModel
@@ -611,6 +617,7 @@ namespace EMP
         #endregion
 
         public void screenshot()
+public void screenshot()
         {
             Rectangle bounds = Screen.GetBounds(Point.Empty);
             using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
@@ -679,80 +686,6 @@ namespace EMP
                 }
             }
         }
-
-        #region  Commented Screenshot Interval from API
-        //private readonly object listLock = new object();
-        //private async Task screenshot() 
-        //{
-        //    int interval = await GetScreenshotIntervalAsync();
-
-        //    timer1.Interval = interval;
-
-        //    Rectangle bounds = Screen.GetBounds(Point.Empty);
-        //    string name = DateTime.Now.ToString("yyyyMMddHHmmss");
-        //    string directoryPath = Path.Combine(Application.StartupPath, "ScreenShot");
-
-        //    if (!Directory.Exists(directoryPath))
-        //    {
-        //        Directory.CreateDirectory(directoryPath);
-        //    }
-
-        //    string filePath = Path.Combine(directoryPath, $"{name}.jpg");
-
-        //    using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
-        //    {
-        //        using (Graphics g = Graphics.FromImage(bitmap))
-        //        {
-        //            g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
-        //        }
-        //        bitmap.Save(filePath, ImageFormat.Jpeg);
-        //    }
-
-        //    lock (listLock)
-        //    {
-        //        addlist.Add(filePath);
-        //    }
-
-        //    if (!timer2.Enabled)
-        //    {
-        //        timer2.Interval = interval;
-        //        timer2.Start();
-        //    }
-        //    else
-        //    {
-        //        timer2.Interval = interval;
-        //    }
-        //}
-
-        //private async Task<int> GetScreenshotIntervalAsync()
-        //{
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        HttpResponseMessage response = await client.GetAsync(Program.OnlineURL + "api/Screenshot/GetSelectedInterval");
-        //        response.EnsureSuccessStatusCode();
-
-        //        string responseBody = await response.Content.ReadAsStringAsync();
-        //        Console.WriteLine($"Response Body: {responseBody}");
-
-        //        try
-        //        {
-        //            var intervals = JArray.Parse(responseBody);
-        //            if (intervals.Count > 0)
-        //            {
-        //                var intervalInMilliseconds = (int)intervals[0]["intervalInMilliseconds"];
-        //                return intervalInMilliseconds;
-        //            }
-
-        //            throw new Exception("No intervals found in API response.");
-        //        }
-        //        catch (JsonException ex)
-        //        {
-        //            throw new Exception("Error parsing JSON response.", ex);
-        //        }
-        //    }
-        //}
-        #endregion
-
         public void changestatus()
         {
             if (currenttype == 0)
