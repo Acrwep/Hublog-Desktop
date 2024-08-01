@@ -50,6 +50,8 @@ namespace EMP
                 }
             }
         }
+
+        #region old punchout
         public void punchbreakout()
         {
             GetModels LM = new GetModels();
@@ -82,30 +84,78 @@ namespace EMP
 
             }
         }
+        #endregion
+
+        #region commented old Form1_Load
+        //private void Form1_Load(object sender, EventArgs e)
+        //{
+        //    punchbreakout();
+        //    for (int i = 0; i < objlist.Count; i++)
+        //    {
+        //        Panel p = new Panel();
+        //        p.Margin = new Padding(left: 30, top: 10, bottom: 0, right: 0);
+        //        p.Size = new Size() { Height = 30, Width = 310 };
+        //        RadioButton2 rb1 = new RadioButton2();
+        //        rb1.Text = objlist[i].Name;
+        //        rb1.Font = new Font("Arial", 10, FontStyle.Bold);
+        //        rb1.FlatStyle = FlatStyle.Flat;
+        //        rb1.Name = objlist[i].Id.ToString();
+        //        if (i == 0)
+        //        {
+        //            rb1.Checked = true;
+        //        }
+        //        rb1.Click += RadioButton2_Clicked;
+        //        Controls.Add(rb1);
+        //        blist.Add(rb1);
+        //        p.Controls.Add(rb1);
+        //        panel.Controls.Add(p);
+        //        //blist.Add(rb1);
+        //    }
+        //    Console.WriteLine(blist);
+        //    panel.AutoScroll = false;
+        //    panel.HorizontalScroll.Enabled = false;
+        //    panel.HorizontalScroll.Visible = false;
+        //    panel.HorizontalScroll.Maximum = 0;
+        //    panel.AutoScroll = true;
+        //}
+        #endregion
+
         private void Form1_Load(object sender, EventArgs e)
         {
             punchbreakout();
+
             for (int i = 0; i < objlist.Count; i++)
             {
-                Panel p = new Panel();
-                p.Margin = new Padding(left: 30, top: 10, bottom: 0, right: 0);
-                p.Size = new Size() { Height = 30, Width = 310 };
-                RadioButton2 rb1 = new RadioButton2();
-                rb1.Text = objlist[i].Name;
-                rb1.Font = new Font("Arial", 10, FontStyle.Bold);
-                rb1.FlatStyle = FlatStyle.Flat;
-                rb1.Name = objlist[i].Id.ToString();
+                Panel p = new Panel
+                {
+                    Margin = new Padding(left: 30, top: 10, bottom: 0, right: 0),
+                    Size = new Size(310, 30)
+                };
+
+                RadioButton2 rb1 = new RadioButton2
+                {
+                    Text = objlist[i].Name,
+                    Font = new Font("Arial", 10, FontStyle.Bold),
+                    FlatStyle = FlatStyle.Flat,
+                    Name = objlist[i].Id.ToString(),
+                    Tag = new BreakInfo { Id = objlist[i].Id, Max_Break_Time = objlist[i].Max_Break_Time }
+                    //Tag = objlist[i].Id,
+                };
+
                 if (i == 0)
                 {
                     rb1.Checked = true;
                 }
+
+                Console.WriteLine(rb1);
+
                 rb1.Click += RadioButton2_Clicked;
                 Controls.Add(rb1);
                 blist.Add(rb1);
                 p.Controls.Add(rb1);
                 panel.Controls.Add(p);
-                //blist.Add(rb1);
             }
+
             panel.AutoScroll = false;
             panel.HorizontalScroll.Enabled = false;
             panel.HorizontalScroll.Visible = false;
@@ -115,9 +165,55 @@ namespace EMP
 
         private void btnbreak_Click(object sender, EventArgs e)
         {
-            string breakid = blist.Where(c => c.Checked == true).Select(c => c.Name).FirstOrDefault();
-            frmdashboard.breakid = Convert.ToInt32(Conversion.Val(breakid));
-            this.Close();
+            //object breakid = blist.Where(c => c.Checked == true).Select(c => c.Tag).FirstOrDefault();           
+            //frmdashboard.breakid = Convert.ToInt32(Conversion.Val(breakid));
+            //this.Close();
+
+            var selectedBreak = blist.FirstOrDefault(c => c.Checked);
+
+            if (selectedBreak != null && selectedBreak.Tag is BreakInfo breakInfo)
+            {
+                var breakDetails = new BreakInfo
+                {
+                    Id = breakInfo.Id,
+                    Max_Break_Time = breakInfo.Max_Break_Time
+                };
+
+                frmdashboard.BreakInfo = breakDetails;
+                this.Close();
+            }
         }
+
+        //private void btnbreak_Click(object sender, EventArgs e)
+        //{
+        //    RadioButton2 selectedButton = blist.FirstOrDefault(c => c.Checked);
+
+        //    if (selectedButton != null)
+        //    {
+        //        //if (selectedButton.Tag != null && int.TryParse(selectedButton.Tag.ToString(), out int maxBreakTime))
+        //        //{
+        //        //    BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+        //        //    breakTimerForm.Show();
+        //        //    this.Close();
+        //        //}
+        //        if (selectedButton.Tag is BreakInfo breakInfo)
+        //        {
+        //            int breakId = breakInfo.Id;
+        //            int maxBreakTime = breakInfo.Max_Break_Time;
+
+        //            BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+        //            breakTimerForm.Show();
+        //            this.Close();
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("Invalid break time selected.");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("No break selected.");
+        //    }
+        //}
     }
 }

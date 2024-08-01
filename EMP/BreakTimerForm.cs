@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EMP.Models;
+using System;
 using System.Windows.Forms;
 
 namespace EMP
@@ -14,10 +8,13 @@ namespace EMP
     {
 
         private int _timeLeft;
-        public BreakTimerForm(int maxBreakTime)
+        private int _breakId;
+        private frmdashboard _dashboard;
+        public BreakTimerForm(int breakId, int maxBreakTime)
         {
             InitializeComponent();
-            _timeLeft = maxBreakTime * 60; 
+            _timeLeft = maxBreakTime * 60;
+            _breakId = breakId;
             lblTimer.Text = TimeSpan.FromSeconds(_timeLeft).ToString(@"mm\:ss");
             timer1.Interval = 1000;
             timer1.Tick += Timer1_Tick;
@@ -42,6 +39,12 @@ namespace EMP
 
         private void btnResume_Click(object sender, EventArgs e)
         {
+            if (_dashboard.currenttype == 2)
+            {
+                _dashboard.PunchBreakOut(_breakId);
+                timer1.Start();
+            }
+            this.Close();
             this.Close();
         }
         private void BreakTimerForm_Load(object sender, EventArgs e)

@@ -10,6 +10,13 @@ namespace EMP.Models
     {
 
     }
+
+    public class BreakInfo
+    {
+        public int Id { get; set; }
+        public int Max_Break_Time { get; set; } 
+    }
+
     public class LoginModels
     {
         public string UserName { get; set; }

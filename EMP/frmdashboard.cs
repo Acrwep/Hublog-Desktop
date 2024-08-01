@@ -20,7 +20,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;     
+using System.Configuration;
 using System.Data.SqlClient;
 
 namespace EMP
@@ -33,7 +33,9 @@ namespace EMP
         }
 
         public int currenttype = 0;
-        public static int breakid = 0;
+        //public static int breakid = 0;
+        //public static int Max_Break_Time = 0;
+        public static BreakInfo BreakInfo;
         public string diff = "";
         Stopwatch SW = new Stopwatch();
         Stopwatch SW1 = new Stopwatch();
@@ -51,7 +53,6 @@ namespace EMP
             timer3.Start();
             startup();
         }
-
         private void frmdashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -73,7 +74,6 @@ namespace EMP
 
             }
         }
-
         private void closeapp(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Do you want to punch out before exiting?", "Punch Out Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -95,7 +95,7 @@ namespace EMP
                 mynotifyicon.ShowBalloonTip(500);
                 this.Hide();
             }
-                        else if (FormWindowState.Normal == this.WindowState)
+            else if (FormWindowState.Normal == this.WindowState)
             {
                 mynotifyicon.Visible = false;
             }
@@ -206,16 +206,16 @@ namespace EMP
                 Program.token = objresult.token;
                 pnllogin.Visible = false;
                 loginprocesss();
-                            }
+            }
             else
             {
-                                Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
+                Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
                 if (errorshow == true)
                 {
                     MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                
+
             }
         }
         public void logoutcheck(bool errorshow)
@@ -263,7 +263,8 @@ namespace EMP
             }
             else if (currenttype == 2)
             {
-                PunchBreakOut(breakid);
+                //PunchBreakOut(breakid);
+                PunchBreakOut(BreakInfo.Id);
             }
         }
         public void punchin()
@@ -306,7 +307,7 @@ namespace EMP
             {
                 Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
-                            }
+            }
         }
         public void punchout()
         {
@@ -346,7 +347,7 @@ namespace EMP
                 SW1.Stop();
                 SW1.Reset();
                 timer1.Stop();
-               changestatus();
+                changestatus();
 
                 //Application.Exit();
 
@@ -355,12 +356,9 @@ namespace EMP
             {
                 Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
                 Logger.LogError(responseString1B);
-                //var objmaster = JsonConvert.DeserializeObject<ErrorMsg>(responseString1B);
-                //Logger.LogError("Login Server Error");
-                //Logger.LogError(objmaster.Message);
             }
         }
-        public void PunchBreakIn(int BreakEntryId)
+        public async Task PunchBreakIn(int BreakEntryId)
         {
             List<UserBreakModel> obj = new List<UserBreakModel>();
             UserBreakModel LM = new UserBreakModel();
@@ -394,8 +392,12 @@ namespace EMP
                 timer1.Stop();
                 changestatus();
 
-                int maxBreakTime = GetMaxBreakTime(BreakEntryId); 
-                BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+                //int maxBreakTime = GetMaxBreakTime(BreakEntryId);
+                //BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+                //breakTimerForm.ShowDialog();
+
+                int maxBreakTime = await GetMaxBreakTime(BreakEntryId);
+                BreakTimerForm breakTimerForm = new BreakTimerForm(BreakEntryId, maxBreakTime);
                 breakTimerForm.ShowDialog();
             }
             else
@@ -405,37 +407,73 @@ namespace EMP
             }
         }
 
-
-private int GetMaxBreakTime(int breakEntryId)
-    {
-        string connectionString = "Data Source=DESKTOP-M2LCTQE\\SQLEXPRESS;Initial Catalog=EMP4;User Id=sa;Password=Hublog123;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
-
-        string query = "SELECT Max_Break_Time FROM BreakMaster WHERE Id = @BreakEntryId";
-
-        try
+        private async Task<int> GetMaxBreakTime(int breakEntryId)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            string URL = $"{Program.OnlineURL}api/Users/GetBreakMasterById/{breakEntryId}";
+
+            using (var client = new HttpClient())
             {
-                using (SqlCommand command = new SqlCommand(query, connection))
+                client.BaseAddress = new Uri(URL);
+                client.Timeout = TimeSpan.FromMinutes(1);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", Program.token);
+
+                try
                 {
-                    command.Parameters.AddWithValue("@BreakEntryId", breakEntryId);
-                    connection.Open();
-                    object result = command.ExecuteScalar();
-                    if (result != null && int.TryParse(result.ToString(), out int maxBreakTime))
+                    HttpResponseMessage response = await client.GetAsync(URL);
+
+                    if (response.IsSuccessStatusCode)
                     {
-                        return maxBreakTime;
+                        string responseString = await response.Content.ReadAsStringAsync();
+                        BreakInfo breakDetails = JsonConvert.DeserializeObject<BreakInfo>(responseString);
+                        return breakDetails.Max_Break_Time;
                     }
+                    else
+                    {
+                        // Handle error response
+                        Logger.LogError($"Failed to retrieve break details: {response.StatusCode}");
+                        return 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    Logger.LogError($"Exception occurred while retrieving break details: {ex.Message}");
+                    return 0;
                 }
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex.Message);
-        }
-        return 0;
-    }
 
-    public void PunchBreakOut(int breakEntryId)
+        //private int GetMaxBreakTime(int breakEntryId)
+        //{
+        //    string connectionString = "Data Source=DESKTOP-M2LCTQE\\SQLEXPRESS;Initial Catalog=EMP4;User Id=sa;Password=Hublog123;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
+
+        //    string query = "SELECT Max_Break_Time FROM BreakMaster WHERE Id = @BreakEntryId";
+
+        //    try
+        //    {
+        //        using (SqlConnection connection = new SqlConnection(connectionString))
+        //        {
+        //            using (SqlCommand command = new SqlCommand(query, connection))
+        //            {
+        //                command.Parameters.AddWithValue("@BreakEntryId", breakEntryId);
+        //                connection.Open();
+        //                object result = command.ExecuteScalar();
+        //                if (result != null && int.TryParse(result.ToString(), out int maxBreakTime))
+        //                {
+        //                    return maxBreakTime;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Error: " + ex.Message);
+        //    }
+        //    return 0;
+        //}
+
+        public void PunchBreakOut(int breakEntryId)
         {
             List<UserBreakModel> obj = new List<UserBreakModel>();
             UserBreakModel breakModel = new UserBreakModel
@@ -617,7 +655,6 @@ private int GetMaxBreakTime(int breakEntryId)
         #endregion
 
         public void screenshot()
-public void screenshot()
         {
             Rectangle bounds = Screen.GetBounds(Point.Empty);
             using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
@@ -706,33 +743,37 @@ public void screenshot()
                 btnbreak.Text = "Resume";
             }
         }
-        private void btnbreak_Click(object sender, EventArgs e)
+        public void btnbreak_Click(object sender, EventArgs e)
         {
             if (currenttype == 1)
             {
-                breakid = 0;
+                //breakid = 0;
+                //BreakInfo.Id = 0;
                 frmbreak obj = new frmbreak();
                 obj.ShowDialog();
-                if (breakid != 0)
+                if (BreakInfo.Id != 0)
                 {
-                    PunchBreakIn(breakid);
+                    //PunchBreakIn(breakid);
+                    PunchBreakIn(BreakInfo.Id);
                     timer1.Stop();
                 }
             }
             else if (currenttype == 2)
             {
-                PunchBreakOut(breakid);
+                //PunchBreakOut(breakid);
+                PunchBreakOut(BreakInfo.Id);
                 timer1.Start();
             }
         }
 
 
-        #region=======Timers==============
+       #region=======Timers==============
         private void timer1_Tick(object sender, EventArgs e)
         {
             screenshot();
             //browserdetails();
         }
+
         //private void timer2_Tick(object sender, EventArgs e)
         //{
         //    if (addlist.Count != 0)
@@ -810,7 +851,6 @@ public void screenshot()
 
             lbllastsync.Text = "Last Sync " + diff + " Ago";
         }
-
 
         #endregion
 
