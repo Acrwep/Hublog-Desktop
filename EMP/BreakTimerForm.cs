@@ -9,8 +9,9 @@ namespace EMP
 
         private int _timeLeft;
         private int _breakId;
+        private string _breakname;
         private frmdashboard _dashboard;
-        public BreakTimerForm(frmdashboard dashboard,int breakId, int maxBreakTime)
+        public BreakTimerForm(frmdashboard dashboard,int breakId, int maxBreakTime, string breakname)
         {
             InitializeComponent();
             _dashboard = dashboard;
@@ -20,6 +21,22 @@ namespace EMP
             timer1.Interval = 1000;
             timer1.Tick += Timer1_Tick;
             timer1.Start();
+            _breakname = breakname;
+
+            this.MinimizeBox = false;
+            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_NOCLOSE = 0x200;
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CS_NOCLOSE;
+                return cp;
+            }
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
@@ -27,14 +44,20 @@ namespace EMP
             if (_timeLeft > 0)
             {
                 _timeLeft--;
+                lblBreakStatus.Text = "You are in a " + _breakname;
                 TimeSpan timeSpan = TimeSpan.FromSeconds(_timeLeft);
                 lblTimer.Text = timeSpan.ToString(@"mm\:ss");
             }
             else
             {
+                //timer1.Stop();
+                //MessageBox.Show("Break time is over!");
+                //this.Close();
+
                 timer1.Stop();
-                MessageBox.Show("Break time is over!");
-                this.Close();
+                lblBreakStatus.Text = "Break time is over!";
+                btnResume.BackColor = System.Drawing.Color.Red;
+                btnResume.Text = "Resume Working (Time Up)";
             }
         }
 
@@ -42,10 +65,6 @@ namespace EMP
         {
             _dashboard.PunchBreakOut(_breakId);
             this.Close();
-        }
-        private void BreakTimerForm_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

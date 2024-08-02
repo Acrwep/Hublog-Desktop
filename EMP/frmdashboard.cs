@@ -249,7 +249,6 @@ namespace EMP
 
                     string responseString = response.Content.ReadAsStringAsync().Result;
 
-                    // Log the raw response for debugging
                     Logger.LogInfo("Raw response: " + responseString);
 
                     if (response.IsSuccessStatusCode)
@@ -328,7 +327,6 @@ namespace EMP
                 MessageBox.Show("An unexpected error occurred during the login process: " + ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         public void logoutcheck(bool errorshow)
         {
@@ -499,18 +497,25 @@ namespace EMP
             if (messge1B.IsSuccessStatusCode)
             {
                 currenttype = 2;
-                SW.Stop();
+                //SW.Stop();
                 SW1.Start();
-                timer1.Stop();
+                //timer1.Stop();
                 changestatus();
 
-                //int maxBreakTime = GetMaxBreakTime(BreakEntryId);
-                //BreakTimerForm breakTimerForm = new BreakTimerForm(maxBreakTime);
+                //int maxBreakTime = await GetMaxBreakTime(BreakEntryId);
+                //BreakTimerForm breakTimerForm = new BreakTimerForm(this, BreakEntryId, maxBreakTime);
                 //breakTimerForm.ShowDialog();
 
-                int maxBreakTime = await GetMaxBreakTime(BreakEntryId);
-                BreakTimerForm breakTimerForm = new BreakTimerForm(this, BreakEntryId, maxBreakTime);
-                breakTimerForm.ShowDialog();
+                BreakInfo breakDetails = await GetBreakDetails(BreakEntryId);
+                if (breakDetails != null)
+                {
+                    BreakTimerForm breakTimerForm = new BreakTimerForm(this, BreakEntryId, breakDetails.Max_Break_Time, breakDetails.Name);
+                    breakTimerForm.ShowDialog();
+                }
+                else
+                {
+                    Logger.LogError("Failed to retrieve break details.");
+                }
             }
             else
             {
@@ -519,7 +524,7 @@ namespace EMP
             }
         }
 
-        private async Task<int> GetMaxBreakTime(int breakEntryId)
+        private async Task<BreakInfo> GetBreakDetails(int breakEntryId)
         {
             string URL = $"{Program.OnlineURL}api/Users/GetBreakMasterById/{breakEntryId}";
 
@@ -537,24 +542,28 @@ namespace EMP
                     if (response.IsSuccessStatusCode)
                     {
                         string responseString = await response.Content.ReadAsStringAsync();
-                        BreakInfo breakDetails = JsonConvert.DeserializeObject<BreakInfo>(responseString);
-                        return breakDetails.Max_Break_Time;
+                        BreakInfo breakInfo = JsonConvert.DeserializeObject<BreakInfo>(responseString);
+
+                        return new BreakInfo
+                        {
+                            Max_Break_Time = breakInfo.Max_Break_Time,
+                            Name = breakInfo.Name
+                        };
                     }
                     else
                     {
-                        // Handle error response
                         Logger.LogError($"Failed to retrieve break details: {response.StatusCode}");
-                        return 0;
+                        return null;
                     }
                 }
                 catch (Exception ex)
                 {
-
                     Logger.LogError($"Exception occurred while retrieving break details: {ex.Message}");
-                    return 0;
+                    return null;
                 }
             }
         }
+
 
         //private int GetMaxBreakTime(int breakEntryId)
         //{
@@ -617,9 +626,9 @@ namespace EMP
                 if (response.IsSuccessStatusCode)
                 {
                     currenttype = 1;
-                    SW.Start();
+                    //SW.Start();
                     SW1.Stop();
-                    timer1.Start();
+                    //timer1.Start();
                     changestatus();
                 }
                 else
@@ -859,16 +868,33 @@ namespace EMP
         {
             if (currenttype == 1)
             {
-                //breakid = 0;
-                //BreakInfo.Id = 0;
+                if (BreakInfo == null)
+                {
+                    BreakInfo = new BreakInfo();
+                }
+
+                BreakInfo.Id = 0;
                 frmbreak obj = new frmbreak();
                 obj.ShowDialog();
-                if (BreakInfo.Id != 0)
+
+                if (BreakInfo != null && BreakInfo.Id != 0)
                 {
-                    //PunchBreakIn(breakid);
                     PunchBreakIn(BreakInfo.Id);
                     timer1.Stop();
                 }
+
+                #region commented
+                ////breakid = 0;
+                //BreakInfo.Id = 0;
+                //frmbreak obj = new frmbreak();
+                //obj.ShowDialog();
+                //if (BreakInfo.Id != 0)
+                //{
+                //    //PunchBreakIn(breakid);
+                //    PunchBreakIn(BreakInfo.Id);
+                //    timer1.Stop();
+                //}
+                #endregion
             }
             else if (currenttype == 2)
             {
