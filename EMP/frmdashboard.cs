@@ -85,6 +85,7 @@ namespace EMP
                 {
                     punchout();
                 }
+                if (result == DialogResult.No) return;
             }
             Application.Exit();
         }
