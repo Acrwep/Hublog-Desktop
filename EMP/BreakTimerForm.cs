@@ -44,18 +44,18 @@ namespace EMP
             if (_timeLeft > 0)
             {
                 _timeLeft--;
-                lblBreakStatus.Text = "You are in a " + _breakname;
+                lblBreakStatus.Text = "You are in.."; // + _breakname;
+                lblBreakname.Text = _breakname;
+                lblBreakname.ForeColor = System.Drawing.Color.Green;
                 TimeSpan timeSpan = TimeSpan.FromSeconds(_timeLeft);
                 lblTimer.Text = timeSpan.ToString(@"mm\:ss");
             }
             else
             {
-                //timer1.Stop();
-                //MessageBox.Show("Break time is over!");
-                //this.Close();
-
                 timer1.Stop();
                 lblBreakStatus.Text = "Break time is over!";
+                lblBreakStatus.ForeColor = System.Drawing.Color.Black;
+                lblBreakStatus.Location = new System.Drawing.Point(60, 10);
                 btnResume.BackColor = System.Drawing.Color.Red;
                 btnResume.Text = "Resume Working (Time Up)";
             }

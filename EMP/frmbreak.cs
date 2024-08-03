@@ -177,7 +177,6 @@ namespace EMP
                 {
                     Id = breakInfo.Id,
                     Max_Break_Time = breakInfo.Max_Break_Time,
-                    //Name = breakInfo.Name
                 };
 
                 frmdashboard.BreakInfo = breakDetails;

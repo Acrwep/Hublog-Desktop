@@ -10,6 +10,7 @@ namespace EMP
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btnResume;
         private System.Windows.Forms.Label lblBreakStatus;
+        private System.Windows.Forms.Label lblBreakname;
 
         protected override void Dispose(bool disposing)
         {
@@ -27,8 +28,21 @@ namespace EMP
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnResume = new System.Windows.Forms.Button();
             this.lblBreakStatus = new System.Windows.Forms.Label();
+            this.lblBreakname = new System.Windows.Forms.Label();
             this.SuspendLayout();
 
+            this.lblBreakname.AutoSize = true;
+            this.lblBreakname.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            //this.lblBreakStatus.ForeColor = System.Drawing.Color.White;
+            this.lblBreakname.Location = new System.Drawing.Point(140, 10);
+            this.lblBreakname.Name = "lblBreakname";
+            this.lblBreakname.Size = new System.Drawing.Size(165, 24);
+            this.lblBreakname.TabIndex = 3;
+            this.SuspendLayout();
+
+            //
+            // lblBreakStatus
+            //
             this.lblBreakStatus.AutoSize = true;
             this.lblBreakStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             //this.lblBreakStatus.ForeColor = System.Drawing.Color.White;
@@ -37,7 +51,10 @@ namespace EMP
             this.lblBreakStatus.Size = new System.Drawing.Size(165, 24);
             this.lblBreakStatus.TabIndex = 3;
             this.lblBreakStatus.Text = "You are in a break";
-
+            this.SuspendLayout();
+            //
+            // lblTimer
+            //
             this.lblTimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F);
             this.lblTimer.Location = new System.Drawing.Point(50, 50);
             this.lblTimer.Name = "lblTimer";
@@ -45,7 +62,9 @@ namespace EMP
             this.lblTimer.TabIndex = 0;
             this.lblTimer.Text = "00:00";
             this.lblTimer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-
+            //
+            // btnResume
+            //
             this.btnResume = new System.Windows.Forms.Button();
             this.btnResume.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResume.Name = "btnResume";
@@ -65,6 +84,7 @@ namespace EMP
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(300, 200);
             this.Controls.Add(this.lblBreakStatus);
+            this.Controls.Add(this.lblBreakname);
             this.Controls.Add(this.btnResume);
             this.Controls.Add(this.lblTimer);
             this.Name = "BreakTimerForm";

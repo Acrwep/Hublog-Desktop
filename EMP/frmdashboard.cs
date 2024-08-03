@@ -502,10 +502,6 @@ namespace EMP
                 //timer1.Stop();
                 changestatus();
 
-                //int maxBreakTime = await GetMaxBreakTime(BreakEntryId);
-                //BreakTimerForm breakTimerForm = new BreakTimerForm(this, BreakEntryId, maxBreakTime);
-                //breakTimerForm.ShowDialog();
-
                 BreakInfo breakDetails = await GetBreakDetails(BreakEntryId);
                 if (breakDetails != null)
                 {
