@@ -58,6 +58,8 @@ namespace EMP
                 lblBreakStatus.Location = new System.Drawing.Point(60, 10);
                 btnResume.BackColor = System.Drawing.Color.Red;
                 btnResume.Text = "Resume Working (Time Up)";
+
+                lblBreakname.Visible = false;
             }
         }
 
