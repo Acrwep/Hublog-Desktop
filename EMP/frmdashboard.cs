@@ -40,6 +40,7 @@ namespace EMP
         Stopwatch SW = new Stopwatch();
         Stopwatch SW1 = new Stopwatch();
         DateTime Lastsync = new DateTime();
+        private bool isLoggedIn = false;
 
         public List<string> addlist = new List<string>();
 
@@ -74,19 +75,21 @@ namespace EMP
 
             }
         }
+
         private void closeapp(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Do you want to punch out before exiting?", "Punch Out Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
+            if (isLoggedIn)
             {
-                punchout();
-                Application.Exit();
+                DialogResult result = MessageBox.Show("Do you want to punch out before exiting?", "Punch Out Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    punchout();
+                }
             }
-            else
-            {
-                // Application remains in Tray
-            }
+            Application.Exit();
         }
+
+
         private void frmdashboard_Resize(object sender, EventArgs e)
         {
             if (FormWindowState.Minimized == this.WindowState)
@@ -161,67 +164,6 @@ namespace EMP
             lblemail.Text = Program.Loginlist.Email;
             lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
         }
-
-        #region Login
-        //public void logincheck(bool errorshow)
-        //{
-        //    LoginModels LM = new LoginModels();
-        //    LM.UserName = txtusername.Text;
-        //    LM.Password = txtpassword.Text;
-        //    string master = JsonConvert.SerializeObject(LM);
-        //    string URL = Program.OnlineURL + "api/Login/UserLogin";
-        //    string DATA = master;
-        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        //    System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
-        //    client1B.BaseAddress = new System.Uri(URL);
-        //    client1B.Timeout = TimeSpan.FromMinutes(30);
-        //    client1B.DefaultRequestHeaders.Add("Name", "");
-        //    client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //    System.Net.Http.HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
-        //    HttpResponseMessage messge1B = client1B.PostAsync(URL, content1B).Result;
-        //    var responseString1B = messge1B.Content.ReadAsStringAsync().Result;
-        //    var objresult = JsonConvert.DeserializeObject<loginresult>(responseString1B);
-        //    if (messge1B.IsSuccessStatusCode)
-        //    {
-
-        //        Program.Loginlist = objresult.user;
-        //        Program.token = objresult.token;
-        //        pnllogin.Visible = false;
-        //        loginprocesss();
-        //    }
-        //    else
-        //    {
-        //        Logger.LogError("Login Error : Code : " + HttpStatusCode.BadRequest.ToString());
-        //        Logger.LogError(responseString1B);
-        //        if (errorshow == true)
-        //        {
-        //            MessageBox.Show(objresult.message, "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //        }
-
-        //    }
-        //}
-        //public void loginprocesss()
-        //{
-        //    timer3.Start();
-        //    using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Application.StartupPath + "\\systemdata"))
-        //    {
-        //        string data = JsonConvert.SerializeObject(Program.Loginlist);
-        //        string data1 = "";
-        //        using (var sha256 = SHA256.Create())
-        //        {
-        //            var saltedPasswordAsBytes = Encoding.UTF8.GetBytes(data);
-        //            data1 = Convert.ToBase64String(saltedPasswordAsBytes);
-        //            sw.WriteLine(data1);
-        //            sw.Dispose();
-        //        }
-        //    }
-        //    lblname.Text = Program.Loginlist.First_Name;
-        //    lblemail.Text = Program.Loginlist.Email;
-        //    lblshortname.Text = ((Program.Loginlist.First_Name != "" && Program.Loginlist.First_Name != null) ? Program.Loginlist.First_Name[0].ToString() : "") + ((Program.Loginlist.Last_Name != "" && Program.Loginlist.Last_Name != null) ? Program.Loginlist.Last_Name[0].ToString() : "");
-        //    Lastsync = DateTime.Now;
-        //}
-        #endregion
-
         public void logincheck(bool errorshow)
         {
             try
@@ -258,6 +200,7 @@ namespace EMP
                             var objresult = JsonConvert.DeserializeObject<loginresult>(responseString);
                             Program.Loginlist = objresult.user;
                             Program.token = objresult.token;
+                            isLoggedIn = true;
                             pnllogin.Visible = false;
                             loginprocesss();
                         }
@@ -293,7 +236,6 @@ namespace EMP
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         public void loginprocesss()
         {
             try
@@ -327,7 +269,6 @@ namespace EMP
                 MessageBox.Show("An unexpected error occurred during the login process: " + ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         public void logoutcheck(bool errorshow)
         {
             LoginModels LM = new LoginModels();
@@ -559,36 +500,6 @@ namespace EMP
                 }
             }
         }
-
-
-        //private int GetMaxBreakTime(int breakEntryId)
-        //{
-        //    string connectionString = "Data Source=DESKTOP-M2LCTQE\\SQLEXPRESS;Initial Catalog=EMP4;User Id=sa;Password=Hublog123;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True;";
-
-        //    string query = "SELECT Max_Break_Time FROM BreakMaster WHERE Id = @BreakEntryId";
-
-        //    try
-        //    {
-        //        using (SqlConnection connection = new SqlConnection(connectionString))
-        //        {
-        //            using (SqlCommand command = new SqlCommand(query, connection))
-        //            {
-        //                command.Parameters.AddWithValue("@BreakEntryId", breakEntryId);
-        //                connection.Open();
-        //                object result = command.ExecuteScalar();
-        //                if (result != null && int.TryParse(result.ToString(), out int maxBreakTime))
-        //                {
-        //                    return maxBreakTime;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Error: " + ex.Message);
-        //    }
-        //    return 0;
-        //}
 
         public void PunchBreakOut(int breakEntryId)
         {
