@@ -74,15 +74,8 @@ namespace EMP
 
         private void btnResume_Click(object sender, EventArgs e)
         {
-            if (_timerStopped) 
-            {
-                _dashboard.PunchBreakOut(_breakId);
-                this.Close();
-            }
-            else
-            {
-                Console.WriteLine("timer is still running");
-            }
+            _dashboard.PunchBreakOut(_breakId);
+            this.Close();
         }
     }
 }
