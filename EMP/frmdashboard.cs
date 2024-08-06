@@ -1,16 +1,11 @@
 ﻿using EMP.Models;
 using log4net.Repository.Hierarchy;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,8 +15,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
-using System.Data.SqlClient;
 
 namespace EMP
 {
@@ -30,11 +23,10 @@ namespace EMP
         public frmdashboard()
         {
             InitializeComponent();
+            this.Icon = Hublog.Properties.Resources.hublog1;
         }
 
         public int currenttype = 0;
-        //public static int breakid = 0;
-        //public static int Max_Break_Time = 0;
         public static BreakInfo BreakInfo;
         public string diff = "";
         Stopwatch SW = new Stopwatch();
@@ -47,12 +39,13 @@ namespace EMP
         private void frmdashboard_Load(object sender, EventArgs e)
         {
             pnllogin.Location = new Point() { X = 12, Y = 12 };
-            //this.Size = new Size() { Width = 374, Height = 471 };
             this.Size = new Size() { Width = 379, Height = 580 };
             this.mynotifyicon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
             this.mynotifyicon.ContextMenuStrip.Items.Add("QUIT", null, closeapp);
             timer3.Start();
             startup();
+
+            this.mynotifyicon.Icon = Hublog.Properties.Resources.hublog1;
         }
         private void frmdashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -546,142 +539,6 @@ namespace EMP
                 }
             }
         }
-
-        #region  commented old uploadscreenshot
-        //public void uploadscreenshot(string path)
-        //{
-        //    LoginModels LM = new LoginModels();
-        //    LM.UserName = txtusername.Text;
-        //    LM.Password = txtpassword.Text;
-        //    string filename = Path.GetFileName(path);
-        //    Image im = Image.FromFile(path);
-        //    byte[] imagedata = null;
-        //    using (var ms = new MemoryStream())
-        //    {
-        //        im.Save(ms, im.RawFormat);
-        //        imagedata = ms.ToArray();
-        //    }
-        //    string master = JsonConvert.SerializeObject(LM);
-        //    string URL = Program.OnlineURL + "api/Users/UploadFile";
-        //    string DATA = master;
-        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        //    System.Net.Http.HttpClient client1B = new System.Net.Http.HttpClient();
-        //    client1B.BaseAddress = new System.Uri(URL);
-        //    client1B.Timeout = TimeSpan.FromMinutes(30);
-        //    client1B.DefaultRequestHeaders.Add("UId", Program.Loginlist.Id.ToString());
-        //    client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString());
-        //    client1B.DefaultRequestHeaders.Add("SDate", DateTime.Now.ToString());
-        //    client1B.DefaultRequestHeaders.Add("SType", "ScreenShots");
-        //    client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
-        //    client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //    System.Net.Http.HttpContent content1B = new StringContent(DATA, UTF8Encoding.UTF8, "application/json");
-        //    MultipartFormDataContent content1A = new MultipartFormDataContent();
-        //    content1A.Add(new StreamContent(new MemoryStream(imagedata)), "MyImages", filename);
-        //    HttpResponseMessage messge1B = client1B.PostAsync(URL, content1A).Result;
-        //    var responseString1B = messge1B.Content.ReadAsStringAsync().Result;
-        //    im.Dispose();
-        //    if (messge1B.IsSuccessStatusCode)
-        //    {
-        //        Lastsync = DateTime.Now;
-        //        File.Delete(path);
-        //        addlist.Remove(path);
-        //    }
-        //    else
-        //    {
-        //        if (addlist.Where(c => c == path).Count() == 0)
-        //        {
-        //            addlist.Add(path);
-        //        }
-        //        Logger.LogError("Upload Error : \n " + messge1B + " \n Code : " + HttpStatusCode.BadRequest.ToString());
-        //        Logger.LogError(responseString1B);
-        //    }
-        //}
-        #endregion
-
-        #region  second commented Upload Screenshots
-        //public void uploadscreenshot(string path)
-        //{
-        //    LoginModels LM = new LoginModels
-        //    {
-        //        UserName = txtusername.Text,
-        //        Password = txtpassword.Text
-        //    };
-
-        //    string filename = Path.GetFileName(path);
-        //    Image im = Image.FromFile(path);
-        //    byte[] imagedata;
-        //    using (var ms = new MemoryStream())
-        //    {
-        //        im.Save(ms, im.RawFormat);
-        //        imagedata = ms.ToArray();
-        //    }
-
-        //    string URL = Program.OnlineURL + "api/Users/UploadFile";
-        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-        //    using (var client1B = new HttpClient())
-        //    {
-        //        client1B.BaseAddress = new Uri(URL);
-        //        client1B.Timeout = TimeSpan.FromMinutes(30);
-        //        client1B.DefaultRequestHeaders.Add("UId", Program.Loginlist.Id.ToString());
-        //        client1B.DefaultRequestHeaders.Add("OId", Program.Loginlist.OrganizationId.ToString());
-        //        client1B.DefaultRequestHeaders.Add("SDate", DateTime.Now.ToString());
-        //        client1B.DefaultRequestHeaders.Add("SType", "ScreenShots");
-        //        client1B.DefaultRequestHeaders.Add("Authorization", Program.token);
-        //        client1B.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        //        var content1A = new MultipartFormDataContent();
-
-        //        var imageContent = new ByteArrayContent(imagedata);
-        //        imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-        //        content1A.Add(imageContent, "MyImages", filename);
-
-        //        HttpResponseMessage responseMessage = client1B.PostAsync(URL, content1A).Result;
-        //        string responseString = responseMessage.Content.ReadAsStringAsync().Result;
-
-        //        im.Dispose();
-
-        //        if (responseMessage.IsSuccessStatusCode)
-        //        {
-        //            Lastsync = DateTime.Now;
-        //            File.Delete(path);
-        //            addlist.Remove(path);
-        //        }
-        //        else
-        //        {
-        //            if (!addlist.Contains(path))
-        //            {
-        //                addlist.Add(path);
-        //            }
-        //            Logger.LogError("Upload Error : \n " + responseMessage + " \n Code : " + HttpStatusCode.BadRequest.ToString());
-        //            Logger.LogError(responseString);
-        //        }
-        //    }
-        //}
-        #endregion
-
-        #region  second commented screenshot
-        //public void screenshot()
-        //{
-        //    Rectangle bounds = Screen.GetBounds(Point.Empty);
-        //    string name = DateTime.Now.ToString("yyyyMMddHHmmss");
-        //    name = Application.StartupPath + "\\ScreenShot\\" + name + ".jpg";
-        //    using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
-        //    {
-        //        using (Graphics g = Graphics.FromImage(bitmap))
-        //        {
-        //            g.CopyFromScreen(new Point(bounds.Left, bounds.Top), Point.Empty, bounds.Size);
-        //        }
-        //        bitmap.Save(name, ImageFormat.Jpeg);
-        //    }
-        //    addlist.Add(name);
-
-        //    if (timer2.Enabled == false)
-        //    {
-        //        timer2.Start();
-        //    }
-        //}
-        #endregion
 
         public void screenshot()
         {

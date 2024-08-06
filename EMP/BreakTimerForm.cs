@@ -11,6 +11,7 @@ namespace EMP
         private int _breakId;
         private string _breakname;
         private frmdashboard _dashboard;
+        private bool _timerStopped;
         public BreakTimerForm(frmdashboard dashboard,int breakId, int maxBreakTime, string breakname)
         {
             InitializeComponent();
@@ -22,6 +23,7 @@ namespace EMP
             timer1.Tick += Timer1_Tick;
             timer1.Start();
             _breakname = breakname;
+            _timerStopped = false;
 
             this.MinimizeBox = false;
             this.MaximizeBox = false;
@@ -53,6 +55,7 @@ namespace EMP
             else
             {
                 timer1.Stop();
+                _timerStopped = true;
                 lblBreakStatus.Text = "Break time is over!";
                 lblBreakStatus.ForeColor = System.Drawing.Color.Black;
                 lblBreakStatus.Location = new System.Drawing.Point(60, 10);
@@ -63,10 +66,23 @@ namespace EMP
             }
         }
 
+        //private void btnResume_Click(object sender, EventArgs e)
+        //{
+        //    _dashboard.PunchBreakOut(_breakId);
+        //    this.Close();
+        //}
+
         private void btnResume_Click(object sender, EventArgs e)
         {
-            _dashboard.PunchBreakOut(_breakId);
-            this.Close();
+            if (_timerStopped) 
+            {
+                _dashboard.PunchBreakOut(_breakId);
+                this.Close();
+            }
+            else
+            {
+                Console.WriteLine("timer is still running");
+            }
         }
     }
 }

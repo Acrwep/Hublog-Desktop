@@ -388,20 +388,7 @@ namespace EMP
 
         }
 
-        //private void chkShowPassword_CheckedChanged(object sender, EventArgs e)
-        //{
-        //    if (chkShowPassword.Checked)
-        //    {
-        //        txtpassword.UseSystemPasswordChar = false;
-        //    }
-        //    else
-        //    {
-        //        txtpassword.UseSystemPasswordChar = true;
-        //    }
-        //}
-
         #endregion
-        //private System.Windows.Forms.CheckBox chkShowPassword;
         private System.Windows.Forms.Panel pnllogin;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
