@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EMP.Properties {
+namespace Hublog.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -100,7 +100,7 @@ namespace EMP
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.BackgroundImage = global::EMP.Properties.Resources.hublog;
+            this.panel1.BackgroundImage = global::Hublog.Properties.Resources.hublog;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
@@ -311,7 +311,7 @@ namespace EMP
             // button2
             // 
             this.button2.BackColor = System.Drawing.Color.White;
-            this.button2.BackgroundImage = global::EMP.Properties.Resources.recycle;
+            this.button2.BackgroundImage = global::Hublog.Properties.Resources.recycle;
             this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button2.Enabled = false;
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -327,7 +327,7 @@ namespace EMP
             // btnlogout
             // 
             this.btnlogout.BackColor = System.Drawing.Color.White;
-            this.btnlogout.BackgroundImage = global::EMP.Properties.Resources.logout2;
+            this.btnlogout.BackgroundImage = global::Hublog.Properties.Resources.logout2;
             this.btnlogout.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnlogout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnlogout.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
