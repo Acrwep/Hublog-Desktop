@@ -34,7 +34,7 @@ namespace EMP.Models
         public int OrganizationId { get; set; }
         public int UserId { get; set; }
 
-        public string CDate { get; set; }
+        public DateTime CDate { get; set; }
 
     }
     public class BreakMaster
@@ -55,11 +55,11 @@ namespace EMP.Models
         public int OrganizationId { get; set; } //(int, not null)
         public int Id { get; set; } //(int, not null)
         public int UserId { get; set; } //(int, not null)
-        public string AttendanceDate { get; set; } //(datetime, not null)
-        public string Start_Time { get; set; } //(datetime,  null)
-        public string End_Time { get; set; } //(datetime,  null)
-        public string Total_Time { get; set; } //(datetime,  null)
-        public string Late_Time { get; set; } //(datetime,  null)
+        public DateTime AttendanceDate { get; set; } //(datetime, not null)
+        public Nullable<DateTime> Start_Time { get; set; } //(datetime,  null)
+        public Nullable<DateTime> End_Time { get; set; } //(datetime,  null)
+        public Nullable<DateTime> Total_Time { get; set; } //(datetime,  null)
+        public Nullable<DateTime> Late_Time { get; set; } //(datetime,  null)
         public int Status { get; set; } //(int, not null)
     }
 
@@ -69,9 +69,9 @@ namespace EMP.Models
         public int BreakEntryId { get; set; } //(int, not null)
         public int Id { get; set; } //(int, not null)
         public int UserId { get; set; } //(int, not null)
-        public string BreakDate { get; set; } //(datetime, not null)
-        public string Start_Time { get; set; } //(datetime, not null)
-        public string End_Time { get; set; } //(datetime, not null)
+        public DateTime BreakDate { get; set; } //(datetime, not null)
+        public DateTime Start_Time { get; set; } //(datetime, not null)
+        public Nullable<DateTime> End_Time { get; set; } //(datetime, not null)
         public int Status { get; set; } //(int, not null)
     }
 

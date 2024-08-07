@@ -51,13 +51,22 @@ namespace EMP
             }
         }
 
+        private DateTime GetISTTime()
+        {
+            TimeZoneInfo istTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime utcTime = DateTime.UtcNow;
+            DateTime istTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, istTimeZone);
+            return istTime;
+        }
+
         #region old punchout
         public void punchbreakout()
         {
             GetModels LM = new GetModels();
             LM.OrganizationId = Program.Loginlist.OrganizationId;
             LM.UserId = Program.Loginlist.Id;
-            LM.CDate = DateTime.Now.ToShortDateString();
+            DateTime istTime = GetISTTime();
+            LM.CDate =  istTime;
             string master = JsonConvert.SerializeObject(LM);
             string URL = Program.OnlineURL + "api/Users/GetAvailableBreak";
             string DATA = master;

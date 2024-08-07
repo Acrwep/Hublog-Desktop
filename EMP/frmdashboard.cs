@@ -23,7 +23,7 @@ namespace EMP
         public frmdashboard()
         {
             InitializeComponent();
-            this.Icon = Hublog.Properties.Resources.hublog1;
+            this.MinimizeBox = true;
         }
 
         public int currenttype = 0;
@@ -312,6 +312,15 @@ namespace EMP
                 PunchBreakOut(BreakInfo.Id);
             }
         }
+
+        private DateTime GetISTTime()
+        {
+            TimeZoneInfo istTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime utcTime = DateTime.UtcNow;
+            DateTime istTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, istTimeZone);
+            return istTime;
+        }
+
         public void punchin()
         {
             List<UserAttendanceModel> obj = new List<UserAttendanceModel>();
@@ -319,8 +328,11 @@ namespace EMP
             LM.Id = 0;
             LM.UserId = Program.Loginlist.Id;
             LM.OrganizationId = Program.Loginlist.OrganizationId;
-            LM.AttendanceDate = DateTime.Now.ToShortDateString();
-            LM.Start_Time = DateTime.Now.ToString();
+            //LM.AttendanceDate = DateTime.Now.ToShortDateString();
+            DateTime istTime = GetISTTime();
+            LM.AttendanceDate = istTime; //.ToShortDateString();
+            //LM.Start_Time = DateTime.Now.ToString();
+            LM.Start_Time = istTime; //.ToString();
             LM.End_Time = null;
             LM.Late_Time = null;
             LM.Total_Time = null;
@@ -361,9 +373,10 @@ namespace EMP
             LM.Id = 0;
             LM.UserId = Program.Loginlist.Id;
             LM.OrganizationId = Program.Loginlist.OrganizationId;
-            LM.AttendanceDate = DateTime.Now.ToShortDateString();
+            DateTime istTime = GetISTTime();
+            LM.AttendanceDate = istTime; //.ToShortDateString();
             LM.Start_Time = null;
-            LM.End_Time = DateTime.Now.ToString();
+            LM.End_Time = istTime; //.ToString();
             LM.Late_Time = null;
             LM.Total_Time = null;
             LM.Status = currenttype;
@@ -410,8 +423,9 @@ namespace EMP
             LM.Id = 0;
             LM.UserId = Program.Loginlist.Id;
             LM.OrganizationId = Program.Loginlist.OrganizationId;
-            LM.BreakDate = DateTime.Now.ToString();
-            LM.Start_Time = DateTime.Now.ToString();
+            DateTime istTime = GetISTTime();
+            LM.BreakDate = istTime;//.ToString();
+            LM.Start_Time = istTime;//.ToString();
             LM.BreakEntryId = BreakEntryId;
             LM.End_Time = null;
             LM.Status = currenttype;
@@ -454,7 +468,51 @@ namespace EMP
                 Logger.LogError(responseString1B);
             }
         }
+        public void PunchBreakOut(int breakEntryId)
+        {
+            DateTime istTime = GetISTTime();
+            List<UserBreakModel> obj = new List<UserBreakModel>();
+            UserBreakModel breakModel = new UserBreakModel
+            {
+                Id = 0,
+                UserId = Program.Loginlist.Id,
+                OrganizationId = Program.Loginlist.OrganizationId,
+                BreakDate = istTime, //.ToString(),
+                Start_Time = istTime, //.ToString(),
+                End_Time = istTime,//.ToString(),
+                BreakEntryId = breakEntryId,
+                Status = 2
+            };
+            obj.Add(breakModel);
+            string master = JsonConvert.SerializeObject(obj);
+            string url = Program.OnlineURL + "api/Users/InsertBreak";
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                client.BaseAddress = new Uri(url);
+                client.Timeout = TimeSpan.FromMinutes(30);
+                client.DefaultRequestHeaders.Add("Authorization", Program.token);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpContent content = new StringContent(master, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = client.PostAsync(url, content).Result;
+                var responseString = response.Content.ReadAsStringAsync().Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    currenttype = 1;
+                    //SW.Start();
+                    SW1.Stop();
+                    //timer1.Start();
+                    changestatus();
+                }
+                else
+                {
+                    Logger.LogError("Error: " + response.StatusCode.ToString());
+                    Logger.LogError(responseString);
+                }
+            }
+        }
         private async Task<BreakInfo> GetBreakDetails(int breakEntryId)
         {
             string URL = $"{Program.OnlineURL}api/Users/GetBreakMasterById/{breakEntryId}";
@@ -491,51 +549,6 @@ namespace EMP
                 {
                     Logger.LogError($"Exception occurred while retrieving break details: {ex.Message}");
                     return null;
-                }
-            }
-        }
-
-        public void PunchBreakOut(int breakEntryId)
-        {
-            List<UserBreakModel> obj = new List<UserBreakModel>();
-            UserBreakModel breakModel = new UserBreakModel
-            {
-                Id = 0,
-                UserId = Program.Loginlist.Id,
-                OrganizationId = Program.Loginlist.OrganizationId,
-                BreakDate = DateTime.Now.ToString(),
-                Start_Time = DateTime.Now.ToString(),
-                End_Time = DateTime.Now.ToString(),
-                BreakEntryId = breakEntryId,
-                Status = 2
-            };
-            obj.Add(breakModel);
-            string master = JsonConvert.SerializeObject(obj);
-            string url = Program.OnlineURL + "api/Users/InsertBreak";
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            using (var client = new System.Net.Http.HttpClient())
-            {
-                client.BaseAddress = new Uri(url);
-                client.Timeout = TimeSpan.FromMinutes(30);
-                client.DefaultRequestHeaders.Add("Authorization", Program.token);
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpContent content = new StringContent(master, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = client.PostAsync(url, content).Result;
-                var responseString = response.Content.ReadAsStringAsync().Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    currenttype = 1;
-                    //SW.Start();
-                    SW1.Stop();
-                    //timer1.Start();
-                    changestatus();
-                }
-                else
-                {
-                    Logger.LogError("Error: " + response.StatusCode.ToString());
-                    Logger.LogError(responseString);
                 }
             }
         }
