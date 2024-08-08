@@ -330,7 +330,7 @@ namespace EMP
             LM.OrganizationId = Program.Loginlist.OrganizationId;
             //LM.AttendanceDate = DateTime.Now.ToShortDateString();
             DateTime istTime = GetISTTime();
-            LM.AttendanceDate = istTime; //.ToShortDateString();
+            LM.AttendanceDate = istTime.Date; //.ToShortDateString();
             //LM.Start_Time = DateTime.Now.ToString();
             LM.Start_Time = istTime; //.ToString();
             LM.End_Time = null;
@@ -374,7 +374,7 @@ namespace EMP
             LM.UserId = Program.Loginlist.Id;
             LM.OrganizationId = Program.Loginlist.OrganizationId;
             DateTime istTime = GetISTTime();
-            LM.AttendanceDate = istTime; //.ToShortDateString();
+            LM.AttendanceDate = istTime.Date; //.ToShortDateString();
             LM.Start_Time = null;
             LM.End_Time = istTime; //.ToString();
             LM.Late_Time = null;
@@ -424,7 +424,7 @@ namespace EMP
             LM.UserId = Program.Loginlist.Id;
             LM.OrganizationId = Program.Loginlist.OrganizationId;
             DateTime istTime = GetISTTime();
-            LM.BreakDate = istTime;//.ToString();
+            LM.BreakDate = istTime.Date;//.ToString();
             LM.Start_Time = istTime;//.ToString();
             LM.BreakEntryId = BreakEntryId;
             LM.End_Time = null;
@@ -477,7 +477,7 @@ namespace EMP
                 Id = 0,
                 UserId = Program.Loginlist.Id,
                 OrganizationId = Program.Loginlist.OrganizationId,
-                BreakDate = istTime, //.ToString(),
+                BreakDate = istTime.Date, //.ToString(),
                 Start_Time = istTime, //.ToString(),
                 End_Time = istTime,//.ToString(),
                 BreakEntryId = breakEntryId,
